@@ -32,8 +32,6 @@ def to_graph(self, bbs):
         else:
             print(end_mnemonic)
             assert False
-    for node in ng.nodes:
-        ng.nodes[node]['hub'] = set()
     return ng
 
 def nxg2pgv(self, ng):

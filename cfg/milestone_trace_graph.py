@@ -1,4 +1,3 @@
-from re import I
 from as_cf_utils import CB_INS, UB_INS,BL_INS, RET_INS
 from msg_binarize import binarize
 # from tgraph_util import duplicate, decorate_flow, report_cost, visualize
@@ -35,7 +34,7 @@ def corner(benchmark):
     return picks, self_loops, force_link
 
 
-picks, self_loops, force_link = corner(sys.argv[1])
+#picks, self_loops, force_link = corner(sys.argv[1])
 
 def tprint(s):
     print(s) if trace else None
@@ -177,9 +176,9 @@ def oracle(nxg, msg,bb, pred_bb, parent_node, acc_ct, rt_stack, hint):
         bb.ms_description = 'Entry'
         return True, rt_stack
 
-    if bb.content[0].addr in picks:
-        bb.ms_description = 'Manual Pick'
-        return True, rt_stack
+    # if bb.content[0].addr in picks:
+    #     bb.ms_description = 'Manual Pick'
+    #     return True, rt_stack
 
     # if bb.content[0].addr in picks:
         # bb.ms_description = 'picked block'

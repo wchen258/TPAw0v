@@ -2,7 +2,6 @@ from tools import derive_end_point
 import struct
 import networkx as nx
 import pygraphviz as pgv
-import msg_draw
 
 def binarize(msg, routine_name=None):
     ms_entry, _ = derive_end_point(msg)
@@ -116,14 +115,14 @@ def bin2msg(fname):
 
 
 
-if __name__=='__main__':
-    msg = msg_draw.draw_tracking()
-    binarize(msg, 'tracking.msg') 
-    reduced_visualize(msg, 'reduced.tracking.dot')
+# if __name__=='__main__':
+#     msg = msg_draw.draw_tracking()
+#     binarize(msg, 'tracking.msg') 
+#     reduced_visualize(msg, 'reduced.tracking.dot')
 
-    msg = msg_draw.draw_texture()
-    binarize(msg, 'texture.msg') 
-    reduced_visualize(msg, 'reduced.texture.dot')
+#     msg = msg_draw.draw_texture()
+#     binarize(msg, 'texture.msg') 
+#     reduced_visualize(msg, 'reduced.texture.dot')
 
 
 

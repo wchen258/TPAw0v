@@ -1,25 +1,26 @@
-import lean_cfg, tracer3
+import lean_cfg, tracer
 import networkx as nx
 import setting
 import sys
+import argparse
 from tgraph_util import *
 # from deploy import pipe2
 
-if len(sys.argv) == 2:
-    tar_bin, tar_rt, tar_strips = setting.populate(sys.argv[1])
-elif len(sys.argv) == 3:
-    tar_bin, tar_rt, tar_strips = setting.populate(sys.argv[1], tar_rt=sys.argv[2])
-else:
-    assert False
+
+def get_parser():
+    parser =  argparse.ArgumentParser()
+    parser.add_argument('binary')
+    parser.add_argument('routine')
+    args = parser.parse_args()
+    return args
 
 def initialize(tar_bin, tar_rt, tar_strips, order=False):
-    cfg = lean_cfg.CFGLean(f'../testfield/{tar_bin}', section='all', routine='all')
+    cfg = lean_cfg.CFGLean(f'../demo/application/{tar_bin}', section='all')
     #watch_points = cfg.find_rt_bb(tar_rt)
     d = cfg.solve_rt(tar_rt)
     g = d['nx']
     watch_points = list(g.nodes)
     print(f'watch_points length : {len(watch_points)}')
-
 
     if not order:
         for e in g.edges:
@@ -33,8 +34,8 @@ def accept_strip_flow(g, cfg, watch_points, tar_strip, order = False):
     if order:
         for up, down, data in g.edges(data=True):
             data[f'{tar_strip}'] = {}
-    tracer = tracer3.Tracer(cfg, f'../output/{tar_strip}', limit=-1,watch_points = watch_points)
-    flows = tracer.watch_points_history
+    trc = tracer.Tracer(cfg, f'../trace_data/{tar_strip}', limit=-1,watch_points = watch_points)
+    flows = trc.watch_points_history
     return flows
 
 def accept_strip_embed(g, watch_points, tar_strip, flows):
@@ -99,23 +100,16 @@ def accept_strips(tar_bin, tar_rt, tar_strips):
         print(f'accepting {strip}...')
         flows = accept_strip_flow(g, cfg, watch_points, strip)
         g = embed_flow(g, strip, flows)
-        visualize(g, fname=f'{strip}.stage0.dot')
     return g
 
 def post_accept_decorate(g, tar_strips, order=False):
     decorate_flow(g, tar_strips, order=False)
     remove_null(g)
-    embed_dom(g)
-    visualize(g, fname=f'{tar_bin}.stage1.dot')
+    #embed_dom(g)
     return g
 
-
 if __name__ == '__main__':
-    # cfg, g, watch_points = initialize(tar_bin, tar_rt, tar_strips, order=False)
-    # for tar_strip in tar_strips:
-        # flows = accept_strip_flow(g, watch_points, tar_strip)
-        # g = accept_strip_embed(g, watch_points, tar_strip, flows)
-    # visualize(g,f'{tar_rt}.full.dot', label='full')
-    # pipe2(g)
+    args = get_parser()
+    tar_bin, tar_rt, tar_strips = setting.populate(args.binary)
     g = accept_strips(tar_bin, tar_rt, tar_strips)
     g2 = post_accept_decorate(g, tar_strips, order=False)
