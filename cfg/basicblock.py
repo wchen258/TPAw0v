@@ -20,7 +20,7 @@ class BasicBlock:
         node = self.angr_nodes[0]
         return node.successors_and_jumpkinds()
 
-    def init_succ(self):
+    # def init_succ(self):
         
 
 

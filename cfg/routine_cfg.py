@@ -4,6 +4,14 @@ import networkx as nx
 from basicblock import BasicBlock
 
 
+def derive_names(cfg):
+    """ Look up nodes, and create a set of name for each routine"""
+    rs = set()
+    for node in cfg.nodes():
+        rt_name = node.name.split('+')[0]
+        rs.add(rt_name)
+    return rs
+
 def get_routine_cfg(binary, entry_addr):
     p = angr.Project(binary)
     cfg = p.analyses.CFGFast()
@@ -11,6 +19,8 @@ def get_routine_cfg(binary, entry_addr):
     ng = nx.DiGraph()
     build(entry, cfg, ng)
     return ng
+
+
 
 def blockorize(cfg, routine_name):
     # step 1: collect all relevent node
@@ -54,28 +64,23 @@ def get_rcfg(rt_bbs):
     entry = rt_bbs[0]
     return entry
 
-def rcfg_build(node, ng):
-    for succ,jk in node.successors_and_jumpkinds(): 
-        if jk == 'Ijk_Boring':
-            ng.add_edge(node, end_addr(succ))
-            add_node_attribute(ng, end_addr(node), 'start', node.addr, set())
-            add_node_attribute(ng, end_addr(succ), 'start', succ.addr, set())
-            build(succ, cfg, ng)
-        elif jk == 'Ijk_Call':
-            ret_addr = list(node.instruction_addrs)[-1] + 4  # this is ARM specific by add 4 to return address
-            ret_node = cfg.get_any_node(ret_addr)
-            ng.add_edge(end_addr(node), end_addr(ret_node))
-            add_node_attribute(ng, end_addr(node), 'start', node.addr, set())
-            add_node_attribute(ng, end_addr(ret_node), 'start', ret_node.addr, set())
-            build(ret_node, cfg, ng)
-        else:
-            print(ng.nodes)
-            raise NotImplemented()
-
-
-
-
-
+# def rcfg_build(node, ng):
+#     for succ,jk in node.successors_and_jumpkinds(): 
+#         if jk == 'Ijk_Boring':
+#             ng.add_edge(node, end_addr(succ))
+#             add_node_attribute(ng, end_addr(node), 'start', node.addr, set())
+#             add_node_attribute(ng, end_addr(succ), 'start', succ.addr, set())
+#             build(succ, cfg, ng)
+#         elif jk == 'Ijk_Call':
+#             ret_addr = list(node.instruction_addrs)[-1] + 4  # this is ARM specific by add 4 to return address
+#             ret_node = cfg.get_any_node(ret_addr)
+#             ng.add_edge(end_addr(node), end_addr(ret_node))
+#             add_node_attribute(ng, end_addr(node), 'start', node.addr, set())
+#             add_node_attribute(ng, end_addr(ret_node), 'start', ret_node.addr, set())
+#             build(ret_node, cfg, ng)
+#         else:
+#             print(ng.nodes)
+#             raise NotImplemented()
 
 def _verify_succ_jk(p1,p2):
     assert len(p1) == len(p2)
@@ -108,6 +113,12 @@ def build(node, cfg, ng):
         else:
             print(ng.nodes)
             raise NotImplemented()
+
+if __name__=='__main__':
+    sm = angr.Project('../demo/application/statemate')
+    cfg = sm.analyses.CFGFast()
+    rnames = derive_names(cfg)
+    print(rnames)
 
 
 
