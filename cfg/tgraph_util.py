@@ -231,6 +231,8 @@ def dom_chain(g):
     return chain
 
 def eval_iters(iters, mode='min'):
+    """ Since across multiple sample traces. Each sample has a number of iteration
+        on the edge, use the min across all for safety placement of MS"""
     if isinstance(iters, list):
         if len(iters) == 1:
             return iters[0]
