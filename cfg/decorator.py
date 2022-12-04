@@ -4,6 +4,7 @@ import setting
 import sys
 import argparse
 from tgraph_util import *
+import heuristic
 # from deploy import pipe2
 
 
@@ -112,4 +113,5 @@ if __name__ == '__main__':
     args = get_parser()
     tar_bin, tar_rt, tar_strips = setting.populate(args.binary)
     g = accept_strips(tar_bin, tar_rt, tar_strips)
-    g2 = post_accept_decorate(g, tar_strips, order=False)
+    g = post_accept_decorate(g, tar_strips, order=False)
+    heuristic.apply_heuristic_1(g)
