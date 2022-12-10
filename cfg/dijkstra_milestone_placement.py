@@ -9,7 +9,7 @@ def place_milestone(g, benchmark, blackout_window = 10000, inplace=False):
     mg = dijkstra_solver(g, blackout_window = blackout_window)
     visualize(g, f'{benchmark}.tmsg.full.dot', label=['cost', 'iters'])
     visualize(g, f'{benchmark}.tmsg.dot', label='full')
-    #binarize(mg, f'{benchmark}.tmsg')
+    binarize(mg, f'{benchmark}.tmsg')
     return g
 
 def calculate_min_weight(g, cycles, weight='cost'):
