@@ -1,5 +1,5 @@
 UB_INS = ['b']
-CB_INS = ['b.ne', 'b.hi', 'b.le', 'b.lt', 'b.eq', 'b.ge', 'b.gt', 'b.mi', 'b.pl', 'b.ls', 'b.cs', 'cbz', 'cbnz', 'tbz', 'tbnz', 'b.cc']
+CB_INS = ['b.ne', 'b.hi', 'b.le', 'b.lt', 'b.eq', 'b.ge', 'b.gt', 'b.mi', 'b.pl', 'b.ls', 'b.cs', 'cbz', 'cbnz', 'tbz', 'tbnz', 'b.cc', 'b.vs', 'b.vc', 'b.al']
 BL_INS = ['bl']
 RET_INS= ['ret'] # behavior is same to BR_INS, except if the build want to do a call stack to track the possible return address
 BR_INS = ['br', 'blr'] # ins here would branch but is not decidable pre-run time, these instruction has no branch address in their assembly, they will be the leaf node of the graph
