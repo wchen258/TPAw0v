@@ -1,0 +1,100 @@
+digraph "" {
+	node [label="\N",
+		shape=record,
+		style=filled
+	];
+	"BB <sift> 0x404948 - 0x404984 type: bl"	[label="*** Reason for MS ***
+\lEntry
+\l*** Block Info ***
+\lsift 404948 stp  
+\lsift 40494c mov  
+\lsift 404950 stp  
+\lsift 404954 mov  
+\lsift \
+404958 ldr  
+\lsift 40495c stp  
+\lsift 404960 ldr  
+\lsift 404964 stp  
+\lsift 404968 cmp  
+\lsift 40496c str  
+\lsift 404970 csel  
+\lsift \
+404974 scvtf  
+\lsift 404978 stp  
+\lsift 40497c stp  
+\lsift 404980 stp  
+\lsift 404984 bl E:400a10 
+\llog2f@plt"];
+	"BB <sift> 0x4049c0 - 0x4049cc type: bl"	[label="*** Reason for MS ***
+\l555973129 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 4049c0 str  
+\lsift 4049c4 mov  
+\lsift \
+4049c8 mov  
+\lsift 4049cc bl E:405180 
+\ldiffss"];
+	"BB <sift> 0x404948 - 0x404984 type: bl" -> "BB <sift> 0x4049c0 - 0x4049cc type: bl"	[label="{}"];
+	"BB <sift> 0x4049d0 - 0x4049d8 type: b.le"	[label="*** Reason for MS ***
+\l8917589 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 4049d0 mov  
+\lsift 4049d4 cmp  
+\lsift 4049d8 \
+b.le E:404e40 "];
+	"BB <sift> 0x4049c0 - 0x4049cc type: bl" -> "BB <sift> 0x4049d0 - 0x4049d8 type: b.le"	[label="{}"];
+	"BB <sift> 0x404afc - 0x404b20 type: bl"	[label="*** Reason for MS ***
+\l47254 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 404afc fmov  
+\lsift 404b00 ldr  
+\lsift 404b04 \
+mov  
+\lsift 404b08 mov  
+\lsift 404b0c str  
+\lsift 404b10 mov  
+\lsift 404b14 mov  
+\lsift 404b18 mov  
+\lsift 404b1c str  
+\lsift \
+404b20 bl E:405b28 
+\lsiftlocalmax"];
+	"BB <sift> 0x4049d0 - 0x4049d8 type: b.le" -> "BB <sift> 0x404afc - 0x404b20 type: bl"	[label="{}"];
+	"BB <sift> 0x404b24 - 0x404b30 type: bl"	[label="*** Reason for MS ***
+\l62840 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 404b24 mov  
+\lsift 404b28 mov  
+\lsift 404b2c \
+str  
+\lsift 404b30 bl E:403838 
+\lfHorzcat"];
+	"BB <sift> 0x404afc - 0x404b20 type: bl" -> "BB <sift> 0x404b24 - 0x404b30 type: bl"	[label="{}"];
+	"BB <sift> 0x404f04 - 0x404f0c type: b"	[label="*** Reason for MS ***
+\l11902 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 404f04 str  
+\lsift 404f08 str  
+\lsift 404f0c \
+b E:404d20 "];
+	"BB <sift> 0x404b24 - 0x404b30 type: bl" -> "BB <sift> 0x404f04 - 0x404f0c type: b"	[label="{}"];
+	"BB <sift> 0x404ed4 - 0x404edc type: bl"	[label="*** Reason for MS ***
+\l11905 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 404ed4 mov  
+\lsift 404ed8 ldr  
+\lsift 404edc \
+bl E:403768 
+\lfFreeHandle"];
+	"BB <sift> 0x404b24 - 0x404b30 type: bl" -> "BB <sift> 0x404ed4 - 0x404edc type: bl"	[label="{}"];
+	"BB <sift> 0x404eec - 0x404ef4 type: bl"	[label="*** Reason for MS ***
+\l12180 has exceeded thresh 10000
+\l*** Block Info ***
+\lsift 404eec str  
+\lsift 404ef0 mov  
+\lsift 404ef4 \
+bl E:403768 
+\lfFreeHandle"];
+	"BB <sift> 0x404ed4 - 0x404edc type: bl" -> "BB <sift> 0x404eec - 0x404ef4 type: bl"	[label="{}"];
+	"BB <sift> 0x404eec - 0x404ef4 type: bl" -> "BB <sift> 0x404afc - 0x404b20 type: bl"	[label="{}"];
+}

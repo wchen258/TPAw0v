@@ -38,6 +38,7 @@ def populate(benchmark, tar_rt=None):
         tar_bin = benchmark + '.dp'
         tar_rt = 'main'
         tar_strips = ['tracking.range.0.strip']
+        tar_strips = ['tracking.0.strip']
 
     else:
         pass

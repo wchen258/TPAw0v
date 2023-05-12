@@ -115,14 +115,6 @@ def bin2msg(fname):
 
 
 
-# if __name__=='__main__':
-#     msg = msg_draw.draw_tracking()
-#     binarize(msg, 'tracking.msg') 
-#     reduced_visualize(msg, 'reduced.tracking.dot')
-
-#     msg = msg_draw.draw_texture()
-#     binarize(msg, 'texture.msg') 
-#     reduced_visualize(msg, 'reduced.texture.dot')
 
 
 

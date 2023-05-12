@@ -1,0 +1,389 @@
+digraph "" {
+	node [label="\N",
+		shape=record,
+		style=filled
+	];
+	"BB <gaussianss> 0x4057d0 - 0x405834 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\lEntry
+\l*** Block Info ***
+\lgaussianss 4057d0 stp  
+\lgaussianss 4057d4 scvtf  
+\lgaussianss 4057d8 mov  
+\lgaussianss \
+4057dc stp  
+\lgaussianss 4057e0 fmov  
+\lgaussianss 4057e4 fmov  
+\lgaussianss 4057e8 stp  
+\lgaussianss 4057ec fmov  
+\lgaussianss \
+4057f0 fmov  
+\lgaussianss 4057f4 fdiv  
+\lgaussianss 4057f8 stp  
+\lgaussianss 4057fc stp  
+\lgaussianss 405800 mov  
+\lgaussianss \
+405804 stp  
+\lgaussianss 405808 mov  
+\lgaussianss 40580c stp  
+\lgaussianss 405810 mov  
+\lgaussianss 405814 stp  
+\lgaussianss \
+405818 sub  
+\lgaussianss 40581c stp  
+\lgaussianss 405820 mov  
+\lgaussianss 405824 mov  
+\lgaussianss 405828 stp  
+\lgaussianss \
+40582c mov  
+\lgaussianss 405830 add  
+\lgaussianss 405834 bl E:400a70 
+\lpow@plt\lhub:set()\lfin:0\lfout:1\lf_diff:-1\lis_dom:False\lis_\
+transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <gaussianss> 0x405838 - 0x405858 type: b.pl"	[color="#aaffee",
+		label="gaussianss 405838 fcvt  
+\lgaussianss 40583c fcvt  
+\lgaussianss 405840 fcvt  
+\lgaussianss 405844 fmul  
+\lgaussianss 405848 fdiv  
+\lgaussianss \
+40584c fsub  
+\lgaussianss 405850 fsqrt  
+\lgaussianss 405854 fcmp  
+\lgaussianss 405858 b.pl E:405860 \lhub:set()\lfin:1\lfout:\
+1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x4057d0 - 0x405834 type: bl" -> "BB <gaussianss> 0x405838 - 0x405858 type: b.pl"	[label="cost:2752\liters:[1]"];
+	"BB <gaussianss> 0x405860 - 0x405878 type: bl"	[color="#aaffee",
+		label="gaussianss 405860 fmul  
+\lgaussianss 405864 mov  
+\lgaussianss 405868 mov  
+\lgaussianss 40586c mov  
+\lgaussianss 405870 sub  
+\lgaussianss \
+405874 fcvt  
+\lgaussianss 405878 bl E:405730 
+\lresizeArray\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:\
+False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405838 - 0x405858 type: b.pl" -> "BB <gaussianss> 0x405860 - 0x405878 type: bl"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x40587c - 0x405888 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l2301619 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 40587c str  
+\lgaussianss 405880 mul  
+\lgaussianss \
+405884 sbfiz  
+\lgaussianss 405888 bl E:4009e0 
+\lmalloc@plt\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:\
+False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <gaussianss> 0x405860 - 0x405878 type: bl" -> "BB <gaussianss> 0x40587c - 0x405888 type: bl"	[label="cost:2298866\liters:[1]"];
+	"BB <gaussianss> 0x40588c - 0x405890 type: cbz"	[color="#aaffee",
+		label="gaussianss 40588c mov  
+\lgaussianss 405890 cbz E:405b18 \lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_\
+2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x40587c - 0x405888 type: bl" -> "BB <gaussianss> 0x40588c - 0x405890 type: cbz"	[label="cost:44\liters:[1]"];
+	"BB <gaussianss> 0x405894 - 0x4058a0 type: bl"	[color="#aaffee",
+		label="gaussianss 405894 scvtf  
+\lgaussianss 405898 fmov  
+\lgaussianss 40589c fmov  
+\lgaussianss 4058a0 bl E:400a70 
+\lpow@plt\lhub:\
+set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x40588c - 0x405890 type: cbz" -> "BB <gaussianss> 0x405894 - 0x4058a0 type: bl"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x4058a4 - 0x4058b0 type: bl"	[color="#aaffee",
+		label="gaussianss 4058a4 fmul  
+\lgaussianss 4058a8 scvtf  
+\lgaussianss 4058ac fmov  
+\lgaussianss 4058b0 bl E:400a70 
+\lpow@plt\lhub:\
+set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405894 - 0x4058a0 type: bl" -> "BB <gaussianss> 0x4058a4 - 0x4058b0 type: bl"	[label="cost:14\liters:[1]"];
+	"BB <gaussianss> 0x4058b4 - 0x4058cc type: b.pl"	[color="#aaffee",
+		label="gaussianss 4058b4 fcvt  
+\lgaussianss 4058b8 fdiv  
+\lgaussianss 4058bc fmul  
+\lgaussianss 4058c0 fnmsub  
+\lgaussianss 4058c4 \
+fsqrt  
+\lgaussianss 4058c8 fcmp  
+\lgaussianss 4058cc b.pl E:4058d4 \lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_\
+mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x4058a4 - 0x4058b0 type: bl" -> "BB <gaussianss> 0x4058b4 - 0x4058cc type: b.pl"	[label="cost:14\liters:[1]"];
+	"BB <gaussianss> 0x4058d4 - 0x4058e0 type: bl"	[color="#aaffee",
+		label="gaussianss 4058d4 ldr  
+\lgaussianss 4058d8 movi  
+\lgaussianss 4058dc ldp  
+\lgaussianss 4058e0 bl E:402030 
+\lfSetArray\lhub:set()\lfin:\
+1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x4058b4 - 0x4058cc type: b.pl" -> "BB <gaussianss> 0x4058d4 - 0x4058e0 type: bl"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x4058e4 - 0x4058f4 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l1336285 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 4058e4 fcvt  
+\lgaussianss 4058e8 mov  
+\lgaussianss \
+4058ec str  
+\lgaussianss 4058f0 mov  
+\lgaussianss 4058f4 bl E:405380 
+\limsmooth\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_\
+transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <gaussianss> 0x4058d4 - 0x4058e0 type: bl" -> "BB <gaussianss> 0x4058e4 - 0x4058f4 type: bl"	[label="cost:1336211\liters:[1]"];
+	"BB <gaussianss> 0x4058f8 - 0x4058fc type: b.le"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l48487813 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 4058f8 cmp  
+\lgaussianss 4058fc b.le \
+E:40595c \lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_\
+ms:True"];
+	"BB <gaussianss> 0x4058e4 - 0x4058f4 type: bl" -> "BB <gaussianss> 0x4058f8 - 0x4058fc type: b.le"	[label="cost:48487813\liters:[1]"];
+	"BB <gaussianss> 0x405900 - 0x405924 type: bl"	[color="#aaffee",
+		label="gaussianss 405900 sxtw  
+\lgaussianss 405904 fcvt  
+\lgaussianss 405908 add  
+\lgaussianss 40590c mov  
+\lgaussianss 405910 add  
+\lgaussianss \
+405914 sub  
+\lgaussianss 405918 add  
+\lgaussianss 40591c scvtf  
+\lgaussianss 405920 fmov  
+\lgaussianss 405924 bl E:400a70 
+\lpow@\
+plt\lhub:set()\lfin:5\lfout:5\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:\
+False"];
+	"BB <gaussianss> 0x4058f8 - 0x4058fc type: b.le" -> "BB <gaussianss> 0x405900 - 0x405924 type: bl"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x40595c - 0x405960 type: b.le"	[color="#aaffee",
+		label="gaussianss 40595c cmp  
+\lgaussianss 405960 b.le E:405aa0 \lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_\
+2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405964 - 0x4059a4 type: bl"	[color="#aaffee",
+		label="gaussianss 405964 add  
+\lgaussianss 405968 sxtw  
+\lgaussianss 40596c sub  
+\lgaussianss 405970 cmp  
+\lgaussianss 405974 sub  
+\lgaussianss \
+405978 csel  
+\lgaussianss 40597c add  
+\lgaussianss 405980 add  
+\lgaussianss 405984 sub  
+\lgaussianss 405988 scvtf  
+\lgaussianss \
+40598c mov  
+\lgaussianss 405990 add  
+\lgaussianss 405994 add  
+\lgaussianss 405998 mov  
+\lgaussianss 40599c str  
+\lgaussianss \
+4059a0 ldr  
+\lgaussianss 4059a4 bl E:4052c8 
+\lhalveSize\lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_\
+2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x40595c - 0x405960 type: b.le" -> "BB <gaussianss> 0x405964 - 0x4059a4 type: bl"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x405928 - 0x405938 type: bl"	[color="#aaffee",
+		label="gaussianss 405928 fmov  
+\lgaussianss 40592c ldr  
+\lgaussianss 405930 movi  
+\lgaussianss 405934 ldp  
+\lgaussianss 405938 bl E:\
+402030 
+\lfSetArray\lhub:set()\lfin:5\lfout:5\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:False"];
+	"BB <gaussianss> 0x405900 - 0x405924 type: bl" -> "BB <gaussianss> 0x405928 - 0x405938 type: bl"	[label="cost:14\liters:[5]"];
+	"BB <gaussianss> 0x40593c - 0x405950 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l923583 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 40593c fmul  
+\lgaussianss 405940 mov  
+\lgaussianss \
+405944 str  
+\lgaussianss 405948 ldr  
+\lgaussianss 40594c fcvt  
+\lgaussianss 405950 bl E:405380 
+\limsmooth\lhub:set()\lfin:5\lfout:\
+5\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <gaussianss> 0x405928 - 0x405938 type: bl" -> "BB <gaussianss> 0x40593c - 0x405950 type: bl"	[label="cost:923568\liters:[5]"];
+	"BB <gaussianss> 0x405954 - 0x405958 type: b.ne"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l48297011 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405954 cmp  
+\lgaussianss 405958 b.ne \
+E:405918 \lhub:set()\lfin:5\lfout:5\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_\
+ms:True"];
+	"BB <gaussianss> 0x40593c - 0x405950 type: bl" -> "BB <gaussianss> 0x405954 - 0x405958 type: b.ne"	[label="cost:48297011\liters:[5]"];
+	"BB <gaussianss> 0x405954 - 0x405958 type: b.ne" -> "BB <gaussianss> 0x40595c - 0x405960 type: b.le"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x405954 - 0x405958 type: b.ne" -> "BB <gaussianss> 0x405900 - 0x405924 type: bl"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405aa0 - 0x405aa4 type: bl"	[color="#aaffee",
+		label="gaussianss 405aa0 ldr  
+\lgaussianss 405aa4 bl E:403768 
+\lfFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_\
+mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405aa8 - 0x405ad4 type: ret"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l190912 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405aa8 mov  
+\lgaussianss 405aac ldp  
+\lgaussianss \
+405ab0 ldp  
+\lgaussianss 405ab4 ldp  
+\lgaussianss 405ab8 ldp  
+\lgaussianss 405abc ldp  
+\lgaussianss 405ac0 ldp  
+\lgaussianss \
+405ac4 ldp  
+\lgaussianss 405ac8 ldp  
+\lgaussianss 405acc ldp  
+\lgaussianss 405ad0 ldp  
+\lgaussianss 405ad4 ret  \lhub:set()\lfin:\
+1\lfout:0\lf_diff:1\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <gaussianss> 0x405aa0 - 0x405aa4 type: bl" -> "BB <gaussianss> 0x405aa8 - 0x405ad4 type: ret"	[label="cost:190910\liters:[1]"];
+	"BB <gaussianss> 0x4059a8 - 0x4059b4 type: bl"	[color="#aaffee",
+		label="gaussianss 4059a8 fmov  
+\lgaussianss 4059ac fmov  
+\lgaussianss 4059b0 mov  
+\lgaussianss 4059b4 bl E:400a70 
+\lpow@plt\lhub:set()\lfin:\
+4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405964 - 0x4059a4 type: bl" -> "BB <gaussianss> 0x4059a8 - 0x4059b4 type: bl"	[label="cost:7491\liters:[4]"];
+	"BB <gaussianss> 0x4059b8 - 0x4059c8 type: bl"	[color="#aaffee",
+		label="gaussianss 4059b8 fmul  
+\lgaussianss 4059bc fmov  
+\lgaussianss 4059c0 fmov  
+\lgaussianss 4059c4 fcvt  
+\lgaussianss 4059c8 bl \
+E:400a70 
+\lpow@plt\lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:False"];
+	"BB <gaussianss> 0x4059a8 - 0x4059b4 type: bl" -> "BB <gaussianss> 0x4059b8 - 0x4059c8 type: bl"	[label="cost:14\liters:[4]"];
+	"BB <gaussianss> 0x4059cc - 0x4059ec type: b.pl"	[color="#aaffee",
+		label="gaussianss 4059cc fmul  
+\lgaussianss 4059d0 fcvt  
+\lgaussianss 4059d4 fcvt  
+\lgaussianss 4059d8 fcvt  
+\lgaussianss 4059dc fmul  
+\lgaussianss \
+4059e0 fnmsub  
+\lgaussianss 4059e4 fsqrt  
+\lgaussianss 4059e8 fcmp  
+\lgaussianss 4059ec b.pl E:4059f4 \lhub:set()\lfin:4\lfout:\
+4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x4059b8 - 0x4059c8 type: bl" -> "BB <gaussianss> 0x4059cc - 0x4059ec type: b.pl"	[label="cost:14\liters:[4]"];
+	"BB <gaussianss> 0x4059f4 - 0x405a04 type: b.le"	[color="#aaffee",
+		label="gaussianss 4059f4 fcmpe  
+\lgaussianss 4059f8 movi  
+\lgaussianss 4059fc sxtw  
+\lgaussianss 405a00 ldp  
+\lgaussianss 405a04 b.le \
+E:405ad8 \lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_\
+ms:False"];
+	"BB <gaussianss> 0x4059cc - 0x4059ec type: b.pl" -> "BB <gaussianss> 0x4059f4 - 0x405a04 type: b.le"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405ad8 - 0x405ad8 type: bl"	[color="#aaffee",
+		label="gaussianss 405ad8 bl E:402030 
+\lfSetArray\lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_\
+mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x4059f4 - 0x405a04 type: b.le" -> "BB <gaussianss> 0x405ad8 - 0x405ad8 type: bl"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405adc - 0x405aec type: b.le"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l11290 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405adc ldp  
+\lgaussianss 405ae0 str  
+\lgaussianss \
+405ae4 mul  
+\lgaussianss 405ae8 cmp  
+\lgaussianss 405aec b.le E:405a20 \lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_\
+mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <gaussianss> 0x405ad8 - 0x405ad8 type: bl" -> "BB <gaussianss> 0x405adc - 0x405aec type: b.le"	[label="cost:3767\liters:[4]"];
+	"BB <gaussianss> 0x405a20 - 0x405a24 type: bl"	[color="#aaffee",
+		label="gaussianss 405a20 mov  
+\lgaussianss 405a24 bl E:403768 
+\lfFreeHandle\lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_\
+mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405a28 - 0x405a2c type: b.le"	[color="#aaffee",
+		label="gaussianss 405a28 cmp  
+\lgaussianss 405a2c b.le E:405a8c \lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_\
+2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405a20 - 0x405a24 type: bl" -> "BB <gaussianss> 0x405a28 - 0x405a2c type: b.le"	[label="cost:37\liters:[4]"];
+	"BB <gaussianss> 0x405a30 - 0x405a54 type: bl"	[color="#aaffee",
+		label="gaussianss 405a30 ldr  
+\lgaussianss 405a34 fcvt  
+\lgaussianss 405a38 mov  
+\lgaussianss 405a3c add  
+\lgaussianss 405a40 add  
+\lgaussianss \
+405a44 sub  
+\lgaussianss 405a48 add  
+\lgaussianss 405a4c scvtf  
+\lgaussianss 405a50 fmov  
+\lgaussianss 405a54 bl E:400a70 
+\lpow@\
+plt\lhub:set()\lfin:20\lfout:20\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:\
+False"];
+	"BB <gaussianss> 0x405a28 - 0x405a2c type: b.le" -> "BB <gaussianss> 0x405a30 - 0x405a54 type: bl"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405a8c - 0x405a9c type: b.ne"	[color="#aaffee",
+		label="gaussianss 405a8c add  
+\lgaussianss 405a90 add  
+\lgaussianss 405a94 add  
+\lgaussianss 405a98 cmp  
+\lgaussianss 405a9c b.ne E:\
+4059a0 \lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_\
+ms:False"];
+	"BB <gaussianss> 0x405a8c - 0x405a9c type: b.ne" -> "BB <gaussianss> 0x405aa0 - 0x405aa4 type: bl"	[label="cost:1\liters:[1]"];
+	"BB <gaussianss> 0x405a8c - 0x405a9c type: b.ne" -> "BB <gaussianss> 0x405964 - 0x4059a4 type: bl"	[label="cost:1\liters:[3]"];
+	"BB <gaussianss> 0x405a58 - 0x405a68 type: bl"	[color="#aaffee",
+		label="gaussianss 405a58 fmov  
+\lgaussianss 405a5c ldr  
+\lgaussianss 405a60 movi  
+\lgaussianss 405a64 ldp  
+\lgaussianss 405a68 bl E:\
+402030 
+\lfSetArray\lhub:set()\lfin:20\lfout:20\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:False"];
+	"BB <gaussianss> 0x405a30 - 0x405a54 type: bl" -> "BB <gaussianss> 0x405a58 - 0x405a68 type: bl"	[label="cost:14\liters:[20]"];
+	"BB <gaussianss> 0x405a6c - 0x405a80 type: bl"	[color="#aaffee",
+		label="gaussianss 405a6c fmul  
+\lgaussianss 405a70 mov  
+\lgaussianss 405a74 str  
+\lgaussianss 405a78 ldr  
+\lgaussianss 405a7c fcvt  
+\lgaussianss \
+405a80 bl E:405380 
+\limsmooth\lhub:set()\lfin:20\lfout:20\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:\
+False\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405a58 - 0x405a68 type: bl" -> "BB <gaussianss> 0x405a6c - 0x405a80 type: bl"	[label="cost:3766\liters:[20]"];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l184594 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405a84 cmp  
+\lgaussianss 405a88 b.ne \
+E:405a48 \lhub:set()\lfin:20\lfout:20\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_\
+ms:True"];
+	"BB <gaussianss> 0x405a6c - 0x405a80 type: bl" -> "BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne"	[label="cost:180773\liters:[20]"];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne" -> "BB <gaussianss> 0x405a8c - 0x405a9c type: b.ne"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne" -> "BB <gaussianss> 0x405a30 - 0x405a54 type: bl"	[label="cost:1\liters:[16]"];
+	"BB <gaussianss> 0x405af0 - 0x405b10 type: b.ne"	[color="#d43f24",
+		label="gaussianss 405af0 sub  
+\lgaussianss 405af4 mov  
+\lgaussianss 405af8 add  
+\lgaussianss 405afc lsl  
+\lgaussianss 405b00 ldr  
+\lgaussianss \
+405b04 str  
+\lgaussianss 405b08 add  
+\lgaussianss 405b0c cmp  
+\lgaussianss 405b10 b.ne E:405b00 \lhub:set()\lfin:306000\lfout:\
+306000\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:True\lvisited:True\lis_ms:False"];
+	"BB <gaussianss> 0x405adc - 0x405aec type: b.le" -> "BB <gaussianss> 0x405af0 - 0x405b10 type: b.ne"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405b14 - 0x405b14 type: b"	[color="#aaffee",
+		label="gaussianss 405b14 b E:405a20 \lhub:set()\lfin:4\lfout:4\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:False"];
+	"BB <gaussianss> 0x405af0 - 0x405b10 type: b.ne" -> "BB <gaussianss> 0x405b14 - 0x405b14 type: b"	[label="cost:1\liters:[4]"];
+	"BB <gaussianss> 0x405b14 - 0x405b14 type: b" -> "BB <gaussianss> 0x405a20 - 0x405a24 type: bl"	[label="cost:1\liters:[4]"];
+}

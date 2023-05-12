@@ -1,0 +1,275 @@
+digraph "" {
+	node [label="\N",
+		shape=record,
+		style=filled
+	];
+	"BB <getDisparity> 0x404620 - 0x40465c type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\lEntry
+\l*** Block Info ***
+\lgetDisparity 404620 stp  
+\lgetDisparity 404624 mov  
+\lgetDisparity 404628 \
+ldr  
+\lgetDisparity 40462c stp  
+\lgetDisparity 404630 mov  
+\lgetDisparity 404634 stp  
+\lgetDisparity 404638 ldp  
+\lgetDisparity \
+40463c stp  
+\lgetDisparity 404640 stp  
+\lgetDisparity 404644 mov  
+\lgetDisparity 404648 stp  
+\lgetDisparity 40464c mov  
+\lgetDisparity \
+404650 mov  
+\lgetDisparity 404654 mov  
+\lgetDisparity 404658 mov  
+\lgetDisparity 40465c bl E:401ec8 
+\lfSetArray\lhub:set()\lfin:\
+0\lfout:1\lf_diff:-1\lis_dom:False\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x404660 - 0x404670 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l408506 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404660 mov  
+\lgetDisparity 404664 \
+mov  
+\lgetDisparity 404668 str  
+\lgetDisparity 40466c mov  
+\lgetDisparity 404670 bl E:402180 
+\liSetArray\lhub:set()\lfin:1\lfout:\
+1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x404620 - 0x40465c type: bl" -> "BB <getDisparity> 0x404660 - 0x404670 type: bl"	[label="cost:408506\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404674 - 0x404688 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l408481 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404674 mov  
+\lgetDisparity 404678 \
+add  
+\lgetDisparity 40467c mov  
+\lgetDisparity 404680 asr  
+\lgetDisparity 404684 mov  
+\lgetDisparity 404688 bl E:402180 
+\liSetArray\lhub:\
+set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x404660 - 0x404670 type: bl" -> "BB <getDisparity> 0x404674 - 0x404688 type: bl"	[label="cost:408481\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x40468c - 0x404694 type: b.le"	[color="#aaffee",
+		label="getDisparity 40468c str  
+\lgetDisparity 404690 cmp  
+\lgetDisparity 404694 b.le E:4046bc \lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_\
+dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <getDisparity> 0x404674 - 0x404688 type: bl" -> "BB <getDisparity> 0x40468c - 0x404694 type: b.le"	[label="cost:55\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404698 - 0x4046a4 type: bl"	[color="#aaffee",
+		label="getDisparity 404698 mov  
+\lgetDisparity 40469c mov  
+\lgetDisparity 4046a0 mov  
+\lgetDisparity 4046a4 bl E:404ba0 
+\lpadarray2\lhub:\
+set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <getDisparity> 0x40468c - 0x404694 type: b.le" -> "BB <getDisparity> 0x404698 - 0x4046a4 type: bl"	[label="cost:1\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x4046b8 - 0x4046d4 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l705429 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 4046b8 mov  
+\lgetDisparity 4046bc \
+ldp  
+\lgetDisparity 4046c0 mov  
+\lgetDisparity 4046c4 ldr  
+\lgetDisparity 4046c8 mov  
+\lgetDisparity 4046cc mov  
+\lgetDisparity \
+4046d0 mov  
+\lgetDisparity 4046d4 bl E:401ec8 
+\lfSetArray\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:\
+False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x4046d8 - 0x4046e8 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l421972 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 4046d8 str  
+\lgetDisparity 4046dc \
+movi  
+\lgetDisparity 4046e0 mov  
+\lgetDisparity 4046e4 mov  
+\lgetDisparity 4046e8 bl E:401ec8 
+\lfSetArray\lhub:set()\lfin:1\lfout:\
+1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x4046b8 - 0x4046d4 type: bl" -> "BB <getDisparity> 0x4046d8 - 0x4046e8 type: bl"	[label="cost:421972\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x4046a8 - 0x4046b4 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l705213 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 4046a8 mov  
+\lgetDisparity 4046ac \
+mov  
+\lgetDisparity 4046b0 mov  
+\lgetDisparity 4046b4 bl E:404ba0 
+\lpadarray2\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_\
+transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x404698 - 0x4046a4 type: bl" -> "BB <getDisparity> 0x4046a8 - 0x4046b4 type: bl"	[label="cost:705157\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x4046a8 - 0x4046b4 type: bl" -> "BB <getDisparity> 0x4046b8 - 0x4046d4 type: bl"	[label="cost:705429\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x4046ec - 0x4046fc type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l421701 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 4046ec str  
+\lgetDisparity 4046f0 \
+sub  
+\lgetDisparity 4046f4 str  
+\lgetDisparity 4046f8 sub  
+\lgetDisparity 4046fc bl E:401c70 
+\lfMallocHandle\lhub:set()\lfin:\
+1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x4046d8 - 0x4046e8 type: bl" -> "BB <getDisparity> 0x4046ec - 0x4046fc type: bl"	[label="cost:421701\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404700 - 0x404710 type: bl"	[color="#aaffee",
+		label="getDisparity 404700 ldr  
+\lgetDisparity 404704 mov  
+\lgetDisparity 404708 mov  
+\lgetDisparity 40470c mov  
+\lgetDisparity 404710 \
+bl E:402180 
+\liSetArray\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:False"];
+	"BB <getDisparity> 0x4046ec - 0x4046fc type: bl" -> "BB <getDisparity> 0x404700 - 0x404710 type: bl"	[label="cost:864\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404714 - 0x40471c type: b.le"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l422219 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404714 mov  
+\lgetDisparity 404718 \
+cmp  
+\lgetDisparity 40471c b.le E:404768 \lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_\
+mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x404700 - 0x404710 type: bl" -> "BB <getDisparity> 0x404714 - 0x40471c type: b.le"	[label="cost:421355\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404720 - 0x40473c type: bl"	[color="#aaffee",
+		label="getDisparity 404720 ldp  
+\lgetDisparity 404724 mov  
+\lgetDisparity 404728 mov  
+\lgetDisparity 40472c mov  
+\lgetDisparity 404730 \
+mov  
+\lgetDisparity 404734 mov  
+\lgetDisparity 404738 mov  
+\lgetDisparity 40473c bl E:404540 
+\lcorrelateSAD_2D\lhub:set()\lfin:\
+64\lfout:64\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <getDisparity> 0x404714 - 0x40471c type: b.le" -> "BB <getDisparity> 0x404720 - 0x40473c type: bl"	[label="cost:1\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404768 - 0x40476c type: bl"	[color="#aaffee",
+		label="getDisparity 404768 mov  
+\lgetDisparity 40476c bl E:403600 
+\lfFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_\
+transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <getDisparity> 0x404770 - 0x404774 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l44201 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404770 ldr  
+\lgetDisparity 404774 bl \
+E:403600 
+\lfFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404768 - 0x40476c type: bl" -> "BB <getDisparity> 0x404770 - 0x404774 type: bl"	[label="cost:44200\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404740 - 0x40475c type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l1710625 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404740 ldr  
+\lgetDisparity 404744 \
+mov  
+\lgetDisparity 404748 mov  
+\lgetDisparity 40474c mov  
+\lgetDisparity 404750 mov  
+\lgetDisparity 404754 mov  
+\lgetDisparity \
+404758 add  
+\lgetDisparity 40475c bl E:404b18 
+\lfindDisparity\lhub:set()\lfin:64\lfout:64\lf_diff:0\lis_dom:True\lis_transient_\
+mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:True"];
+	"BB <getDisparity> 0x404720 - 0x40473c type: bl" -> "BB <getDisparity> 0x404740 - 0x40475c type: bl"	[label="cost:1710624\liters:[64, 64, 64, 64, 64, 64, 64, 64, 64]"];
+	"BB <getDisparity> 0x404760 - 0x404764 type: b.ne"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l564484 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404760 cmp  
+\lgetDisparity 404764 \
+b.ne E:404720 \lhub:set()\lfin:64\lfout:64\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404740 - 0x40475c type: bl" -> "BB <getDisparity> 0x404760 - 0x404764 type: b.ne"	[label="cost:564484\liters:[64, 64, 64, 64, 64, 64, 64, 64, 64]"];
+	"BB <getDisparity> 0x404760 - 0x404764 type: b.ne" -> "BB <getDisparity> 0x404768 - 0x40476c type: bl"	[label="cost:1\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404760 - 0x404764 type: b.ne" -> "BB <getDisparity> 0x404720 - 0x40473c type: bl"	[label="cost:1\liters:[63, 63, 63, 63, 63, 63, 63, 63, 63]"];
+	"BB <getDisparity> 0x404778 - 0x40477c type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l43695 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404778 ldr  
+\lgetDisparity 40477c bl \
+E:403600 
+\lfFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404770 - 0x404774 type: bl" -> "BB <getDisparity> 0x404778 - 0x40477c type: bl"	[label="cost:43695\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404780 - 0x404784 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l68592 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404780 ldr  
+\lgetDisparity 404784 bl \
+E:403600 
+\lfFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404778 - 0x40477c type: bl" -> "BB <getDisparity> 0x404780 - 0x404784 type: bl"	[label="cost:68592\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404788 - 0x40478c type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l70868 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404788 ldr  
+\lgetDisparity 40478c bl \
+E:403610 
+\liFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404780 - 0x404784 type: bl" -> "BB <getDisparity> 0x404788 - 0x40478c type: bl"	[label="cost:70868\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404790 - 0x404794 type: bl"	[color="#aaffee",
+		label="getDisparity 404790 mov  
+\lgetDisparity 404794 bl E:403610 
+\liFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_\
+transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_ms:False"];
+	"BB <getDisparity> 0x404788 - 0x40478c type: bl" -> "BB <getDisparity> 0x404790 - 0x404794 type: bl"	[label="cost:22\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x404798 - 0x40479c type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l68952 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 404798 mov  
+\lgetDisparity 40479c bl \
+E:403610 
+\liFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404790 - 0x404794 type: bl" -> "BB <getDisparity> 0x404798 - 0x40479c type: bl"	[label="cost:68930\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x4047a0 - 0x4047a4 type: bl"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l68778 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 4047a0 mov  
+\lgetDisparity 4047a4 bl \
+E:403610 
+\liFreeHandle\lhub:set()\lfin:1\lfout:1\lf_diff:0\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:\
+True\lis_ms:True"];
+	"BB <getDisparity> 0x404798 - 0x40479c type: bl" -> "BB <getDisparity> 0x4047a0 - 0x4047a4 type: bl"	[label="cost:68778\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+	"BB <getDisparity> 0x4047a8 - 0x4047c4 type: ret"	[color="#ff7e7e",
+		label="*** Reason for MS ***
+\l68089 has exceeded thresh 10000
+\l*** Block Info ***
+\lgetDisparity 4047a8 mov  
+\lgetDisparity 4047ac ldp  
+\lgetDisparity \
+4047b0 ldp  
+\lgetDisparity 4047b4 ldp  
+\lgetDisparity 4047b8 ldp  
+\lgetDisparity 4047bc ldp  
+\lgetDisparity 4047c0 ldp  
+\lgetDisparity \
+4047c4 ret  \lhub:set()\lfin:1\lfout:0\lf_diff:1\lis_dom:True\lis_transient_mono:False\lis_2gd_transient_mono:False\lvisited:True\lis_\
+ms:True"];
+	"BB <getDisparity> 0x4047a0 - 0x4047a4 type: bl" -> "BB <getDisparity> 0x4047a8 - 0x4047c4 type: ret"	[label="cost:68089\liters:[1, 1, 1, 1, 1, 1, 1, 1, 1]"];
+}

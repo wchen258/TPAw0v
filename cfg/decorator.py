@@ -35,7 +35,7 @@ def accept_strip_flow(g, cfg, watch_points, tar_strip, order = False):
     if order:
         for up, down, data in g.edges(data=True):
             data[f'{tar_strip}'] = {}
-    trc = tracer.Tracer(cfg, f'../trace_data/{tar_strip}', limit=-1,watch_points = watch_points)
+    trc = tracer.Tracer(cfg, f'../demo/trace_data/{tar_strip}', limit=-1,watch_points = watch_points)
     flows = trc.watch_points_history
     return flows
 

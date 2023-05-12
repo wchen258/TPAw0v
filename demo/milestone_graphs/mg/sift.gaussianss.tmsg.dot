@@ -1,0 +1,126 @@
+digraph "" {
+	node [label="\N",
+		shape=record,
+		style=filled
+	];
+	"BB <gaussianss> 0x4057d0 - 0x405834 type: bl"	[label="*** Reason for MS ***
+\lEntry
+\l*** Block Info ***
+\lgaussianss 4057d0 stp  
+\lgaussianss 4057d4 scvtf  
+\lgaussianss 4057d8 mov  
+\lgaussianss \
+4057dc stp  
+\lgaussianss 4057e0 fmov  
+\lgaussianss 4057e4 fmov  
+\lgaussianss 4057e8 stp  
+\lgaussianss 4057ec fmov  
+\lgaussianss \
+4057f0 fmov  
+\lgaussianss 4057f4 fdiv  
+\lgaussianss 4057f8 stp  
+\lgaussianss 4057fc stp  
+\lgaussianss 405800 mov  
+\lgaussianss \
+405804 stp  
+\lgaussianss 405808 mov  
+\lgaussianss 40580c stp  
+\lgaussianss 405810 mov  
+\lgaussianss 405814 stp  
+\lgaussianss \
+405818 sub  
+\lgaussianss 40581c stp  
+\lgaussianss 405820 mov  
+\lgaussianss 405824 mov  
+\lgaussianss 405828 stp  
+\lgaussianss \
+40582c mov  
+\lgaussianss 405830 add  
+\lgaussianss 405834 bl E:400a70 
+\lpow@plt"];
+	"BB <gaussianss> 0x40587c - 0x405888 type: bl"	[label="*** Reason for MS ***
+\l2301619 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 40587c str  
+\lgaussianss 405880 mul  
+\lgaussianss \
+405884 sbfiz  
+\lgaussianss 405888 bl E:4009e0 
+\lmalloc@plt"];
+	"BB <gaussianss> 0x4057d0 - 0x405834 type: bl" -> "BB <gaussianss> 0x40587c - 0x405888 type: bl"	[label="{}"];
+	"BB <gaussianss> 0x4058e4 - 0x4058f4 type: bl"	[label="*** Reason for MS ***
+\l1336285 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 4058e4 fcvt  
+\lgaussianss 4058e8 mov  
+\lgaussianss \
+4058ec str  
+\lgaussianss 4058f0 mov  
+\lgaussianss 4058f4 bl E:405380 
+\limsmooth"];
+	"BB <gaussianss> 0x40587c - 0x405888 type: bl" -> "BB <gaussianss> 0x4058e4 - 0x4058f4 type: bl"	[label="{}"];
+	"BB <gaussianss> 0x4058f8 - 0x4058fc type: b.le"	[label="*** Reason for MS ***
+\l48487813 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 4058f8 cmp  
+\lgaussianss 4058fc b.le \
+E:40595c "];
+	"BB <gaussianss> 0x4058e4 - 0x4058f4 type: bl" -> "BB <gaussianss> 0x4058f8 - 0x4058fc type: b.le"	[label="{}"];
+	"BB <gaussianss> 0x40593c - 0x405950 type: bl"	[label="*** Reason for MS ***
+\l923583 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 40593c fmul  
+\lgaussianss 405940 mov  
+\lgaussianss \
+405944 str  
+\lgaussianss 405948 ldr  
+\lgaussianss 40594c fcvt  
+\lgaussianss 405950 bl E:405380 
+\limsmooth"];
+	"BB <gaussianss> 0x4058f8 - 0x4058fc type: b.le" -> "BB <gaussianss> 0x40593c - 0x405950 type: bl"	[label="{}"];
+	"BB <gaussianss> 0x405954 - 0x405958 type: b.ne"	[label="*** Reason for MS ***
+\l48297011 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405954 cmp  
+\lgaussianss 405958 b.ne \
+E:405918 "];
+	"BB <gaussianss> 0x40593c - 0x405950 type: bl" -> "BB <gaussianss> 0x405954 - 0x405958 type: b.ne"	[label="{}"];
+	"BB <gaussianss> 0x405954 - 0x405958 type: b.ne" -> "BB <gaussianss> 0x40593c - 0x405950 type: bl"	[label="{}"];
+	"BB <gaussianss> 0x405adc - 0x405aec type: b.le"	[label="*** Reason for MS ***
+\l11290 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405adc ldp  
+\lgaussianss 405ae0 str  
+\lgaussianss \
+405ae4 mul  
+\lgaussianss 405ae8 cmp  
+\lgaussianss 405aec b.le E:405a20 "];
+	"BB <gaussianss> 0x405954 - 0x405958 type: b.ne" -> "BB <gaussianss> 0x405adc - 0x405aec type: b.le"	[label="{}"];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne"	[label="*** Reason for MS ***
+\l184594 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405a84 cmp  
+\lgaussianss 405a88 b.ne \
+E:405a48 "];
+	"BB <gaussianss> 0x405adc - 0x405aec type: b.le" -> "BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne"	[label="{}"];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne" -> "BB <gaussianss> 0x405adc - 0x405aec type: b.le"	[label="{}"];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne" -> "BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne"	[label="{}"];
+	"BB <gaussianss> 0x405aa8 - 0x405ad4 type: ret"	[label="*** Reason for MS ***
+\l190912 has exceeded thresh 10000
+\l*** Block Info ***
+\lgaussianss 405aa8 mov  
+\lgaussianss 405aac ldp  
+\lgaussianss \
+405ab0 ldp  
+\lgaussianss 405ab4 ldp  
+\lgaussianss 405ab8 ldp  
+\lgaussianss 405abc ldp  
+\lgaussianss 405ac0 ldp  
+\lgaussianss \
+405ac4 ldp  
+\lgaussianss 405ac8 ldp  
+\lgaussianss 405acc ldp  
+\lgaussianss 405ad0 ldp  
+\lgaussianss 405ad4 ret  "];
+	"BB <gaussianss> 0x405a84 - 0x405a88 type: b.ne" -> "BB <gaussianss> 0x405aa8 - 0x405ad4 type: ret"	[label="{}"];
+}

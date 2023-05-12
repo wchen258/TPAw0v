@@ -1,0 +1,53 @@
+digraph "" {
+	node [label="\N",
+		shape=record,
+		style=filled
+	];
+	"BB <create_texture> 0x405010 - 0x40504c type: bl"	[label="*** Reason for MS ***
+\lEntry
+\l*** Block Info ***
+\lcreate_texture 405010 stp  
+\lcreate_texture 405014 mov  
+\lcreate_texture \
+405018 stp  
+\lcreate_texture 40501c mov  
+\lcreate_texture 405020 stp  
+\lcreate_texture 405024 mov  
+\lcreate_texture 405028 ldp  
+\lcreate_\
+texture 40502c stp  
+\lcreate_texture 405030 str  
+\lcreate_texture 405034 stp  
+\lcreate_texture 405038 madd  
+\lcreate_texture \
+40503c stp  
+\lcreate_texture 405040 add  
+\lcreate_texture 405044 sbfiz  
+\lcreate_texture 405048 mov  
+\lcreate_texture 40504c \
+bl E:400920 
+\lmalloc@plt"];
+	"BB <create_texture> 0x4054e4 - 0x4054e8 type: b"	[label="*** Reason for MS ***
+\l12700814 has exceeded thresh 10000
+\l*** Block Info ***
+\lcreate_texture 4054e4 ldr  
+\lcreate_texture 4054e8 \
+b E:405074 "];
+	"BB <create_texture> 0x405010 - 0x40504c type: bl" -> "BB <create_texture> 0x4054e4 - 0x4054e8 type: b"	[label="{}"];
+	"BB <create_texture> 0x4051f4 - 0x4051f8 type: b.ge"	[label="*** Reason for MS ***
+\la valid valve
+\l*** Block Info ***
+\lcreate_texture 4051f4 cmp  
+\lcreate_texture 4051f8 b.ge E:40530c "];
+	"BB <create_texture> 0x4054e4 - 0x4054e8 type: b" -> "BB <create_texture> 0x4051f4 - 0x4051f8 type: b.ge"	[label="{}"];
+	"BB <create_texture> 0x40541c - 0x40542c type: b.lt"	[label="*** Reason for MS ***
+\la valid valve
+\l*** Block Info ***
+\lcreate_texture 40541c ldr  
+\lcreate_texture 405420 add  
+\lcreate_\
+texture 405424 add  
+\lcreate_texture 405428 cmp  
+\lcreate_texture 40542c b.lt E:405324 "];
+	"BB <create_texture> 0x4051f4 - 0x4051f8 type: b.ge" -> "BB <create_texture> 0x40541c - 0x40542c type: b.lt"	[label="{}"];
+}
