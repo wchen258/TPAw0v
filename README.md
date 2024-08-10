@@ -1,7 +1,7 @@
 # TPAw0v
 The implementation presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13)
 
-### Recommanded: Start with the demo in csc directory
+### Recommanded: Start with the csc directory
 The program `start_mp` in `csc`, upon executing, configures the infrastructure necessary, runs a target program `/bin/ls`, traces the target program, and prints out the trace data upon exiting. 
 
 **TL;DR**
