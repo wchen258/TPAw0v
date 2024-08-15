@@ -1,5 +1,7 @@
 # TPAw0v
-The implementation presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13)
+The purpose of this repo is two-folds.
+
+First, it contains a theoretical-minimum setup to conduct ARM CoreSight ETM trace on ZCU102/Kria board (`csc`, `deformat`, `ETM_data_parser`). Second, it contains paritial implementation presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13) (`paper_imp`).
 
 ### Recommanded: Start with the csc directory
 The program `start_mp` in `csc`, upon executing, configures the infrastructure necessary, runs a target program `./hello_ETM`, traces the target program, and prints out the trace data upon exiting. 
