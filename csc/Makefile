@@ -9,9 +9,15 @@ else
     CC=aarch64-linux-gnu-gcc
 endif
 
+all: mp hello
+
 # Target for the final executable
 mp: $(O_FILES) main/start_mp.o
-	$(CC) -DR5 $^ $(CFLAGS) -o start_mp 
+	$(CC) $^ $(CFLAGS) -o start_mp 
+
+# Target for the final executable hello_ETM
+hello: $(O_FILES) main/hello_ETM.o
+	$(CC) -no-pie $^ $(CFLAGS) -o hello_ETM
 
 # Generic rule for compiling .c to .o
 src/%.o: src/%.c
@@ -19,9 +25,13 @@ src/%.o: src/%.c
 
 # Rule for compiling start_mp.c
 main/start_mp.o: main/start_mp.c
-	$(CC) $(CFLAGS) -DR5 -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $@
+
+# Rule for compiling hello_ETM.c
+main/hello_ETM.o: main/hello_ETM.c
+	$(CC) $(CFLAGS) -no-pie -c $< -o $@
 
 # Clean target
 clean:
-	rm -f $(O_FILES) main/start_mp.o
-	rm -f start_mp
+	rm -f $(O_FILES) main/start_mp.o main/hello_ETM.o
+	rm -f start_mp hello_ETM

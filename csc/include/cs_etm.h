@@ -208,6 +208,7 @@ static inline void etm_set_cid(ETM_interface *etm)
 ETM_interface* etm_register(int);
 void etm_disable(ETM_interface *);
 void etm_enable(ETM_interface *);
+uint8_t etm_is_idle(ETM_interface *p_etm);
 void etm_info(ETM_interface *);
 void etm_set_cci(ETM_interface* , int);
 void etm_set_sync(ETM_interface*, int);

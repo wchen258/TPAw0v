@@ -61,6 +61,11 @@ void etm_enable(ETM_interface *p_etm)
     while( (p_etm->trace_status) & 0x1 );
 }
 
+uint8_t etm_is_idle(ETM_interface *p_etm)
+{
+    return (p_etm->trace_status & 0x1);
+}
+
 /*
 Bare-minimum of trace config, and clear garbage values
 */

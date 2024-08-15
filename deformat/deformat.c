@@ -8,9 +8,11 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+// requires 2 positional arguments: the number of active ETMs and the input file name
 void parse_args(int argc, char *argv[], uint8_t* n_mp) {
-    if(argc != 2) {
-        printf("One positional argument required. i.e. the number of active ETMs\n");
+    if(argc != 3) {
+        // printf("One positional argument required. i.e. the number of active ETMs\n");
+        printf("Usage %s <number of active ETMs> <input file name>\n", argv[0]);
         exit(1);
     }
     *n_mp = strtol(argv[1], NULL, 0);
@@ -77,16 +79,23 @@ void dat2out(char* ifname, char* ofname) {
 }
 
 
-
+// requires two positional arguments: the number of active ETMs and the input file name
 int main(int argc, char *argv[]) {
-    const char* fname = "../output/trace.dat";
-    uint8_t n_mp;
+
+    if (argc != 3) {
+        printf("Usage %s <number of active ETMs> <input file name>\n", argv[0]);
+        exit(1);
+    }
+
+    uint8_t n_mp = strtol(argv[1], NULL, 0);
+    char* fname = argv[2];
+
     uint8_t frame_buf[16];
     FILE* fp = fopen(fname, "rb");
     int status;
     int cur_id = -1;
 
-    parse_args(argc, argv, &n_mp);
+    // parse_args(argc, argv, &n_mp);
     FILE** fps = (FILE**) malloc(sizeof(FILE*) * n_mp);
     int i;
     for(i=0; i<n_mp; i++) {

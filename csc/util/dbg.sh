@@ -6,6 +6,9 @@ CSBASE=0xfe800000
 TMC1=0x140000
 TMC2=0x150000
 TMC3=0x170000
+AETM0=0x440000
+
+# TMC registers
 
 RSZ=0x004
 STS=0x00c
@@ -26,6 +29,18 @@ LAR=0xFB0
 LSR=0xFB4
 AXICTL=0x110
 
+# ETM registers
+
+ACVR0=0x400
+ACVR1=0x408
+ACVR2=0x410
+ACVR3=0x418
+ACVR4=0x420
+ACVR5=0x428
+ACVR6=0x430
+ACVR7=0x438
+
+
 function rd {
     local comp=$1
     local reg=$2
@@ -41,7 +56,13 @@ function wr {
     ./devmem $addr w $val
 }
 
-# function pollRRD {
-#     for _ in {1..$(wr TMC3 RWP)}; do
+# print ACVR0 - ACVR7
+function acvr {
+    for i in {0..7}; do
+        local addr=$((CSBASE + AETM0 + ACVR0 + i*8))
+        local addr2=$((CSBASE + AETM0 + ACVR0 + i*8 + 0x4))
+        ./devmem $addr
+        ./devmem $addr2
+    done
+}
 
-# }
