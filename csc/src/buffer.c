@@ -20,57 +20,44 @@ uint32_t *get_buf_ptr(uint64_t buf_addr, uint32_t buf_size)
     return (uint32_t *) ptr;
 }
 
+/*
+    When formatter is enabled. 0xffffffff is not possible. 
+    Thus it can be used as a valid trace ending marker
+*/
 void clear_buffer(uint64_t buf_addr, uint32_t buf_size)
 {
-    printf("Clearing Buffer...\n");
+    printf("Populate Buffer with 0xffffffff\n");
     uint32_t *ptr = get_buf_ptr(buf_addr, buf_size);
     volatile uint32_t *buf = ptr;
     for(uint32_t i=0; i<buf_size/4; i++) {
-	    *buf++ = 0;
+	    *buf++ = 0xffffffff;
     }
     munmap(ptr, buf_size);
 }
 
 void dump_buffer(uint64_t buf_addr, uint32_t buf_size)
 {
-    printf("Start dump trace to output\n");
+    printf("Dumping trace to output/trace.{out.dat}\n");
     uint32_t *ptr = get_buf_ptr(buf_addr, buf_size);
     volatile uint32_t *buf = ptr;
-    FILE *fp = fopen("../output/trace_1.out", "w+");
-    FILE *fp2 = fopen("../output/trace_2.out", "w");
-    FILE *fp3 = fopen("../output/trace.dat", "w");
-    if(fp == NULL || fp2 == NULL || fp3 == NULL) {
+    FILE *fp2 = fopen("./output/trace.out", "w");
+    FILE *fp3 = fopen("./output/trace.dat", "w");
+    if(fp2 == NULL || fp3 == NULL) {
 	    printf("file can't be opened\n");
 	    exit(1);
-    }
-    int ct = 0;
-    for(uint32_t i=0; i<buf_size/4; i++) {
-        fprintf(fp, "0x%08X\n", *buf);
-        if(!(*buf == 0)) {
-            ct = 0;
-        } else {
-            ct ++ ;
-            if(ct == 5)
-                break;
-        }
-        buf++;
     }
 
     buf = ptr;
     for(uint32_t i=0; i<buf_size/4; i++) {
-        //if ((uint32_t)*buf != 0xdeadbeef) {
-        if ((uint32_t)*buf != 0xcafecafe) {
+        if ((uint32_t)*buf != 0xffffffff) {
             fprintf(fp2, "0x%08X\n", *buf);
             fwrite((void *)buf, sizeof(uint32_t), 1, fp3);
-	    buf++;
+	        buf++;
         } else {
             break;
         }
     }
-    printf("Write to output/trace_[1,2].out and trace.dat\n");
-    fclose(fp);
     fclose(fp2);
     fclose(fp3);
     munmap(ptr, buf_size);
-    printf("buffer operation done\n");
 }
