@@ -40,8 +40,8 @@ void dump_buffer(uint64_t buf_addr, uint32_t buf_size)
     printf("Dumping trace to output/trace.{out.dat}\n");
     uint32_t *ptr = get_buf_ptr(buf_addr, buf_size);
     volatile uint32_t *buf = ptr;
-    FILE *fp2 = fopen("./output/trace.out", "w");
-    FILE *fp3 = fopen("./output/trace.dat", "w");
+    FILE *fp2 = fopen("trace.out", "w");
+    FILE *fp3 = fopen("trace.dat", "w");
     if(fp2 == NULL || fp3 == NULL) {
 	    printf("file can't be opened\n");
 	    exit(1);
