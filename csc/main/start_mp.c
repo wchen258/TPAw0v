@@ -12,7 +12,6 @@
 
 
 #define _GNU_SOURCE
-#include "buffer.h"
 #include "cs_etm.h"
 #include "cs_config.h"
 #include "cs_soc.h"
@@ -87,6 +86,10 @@ void poller()
         printf("0x%08x\n", soft_fifo_storage[i]);
         if(i == 30) break;
     }
+
+    fclose(fp);
+    fclose(fp_bin);
+
     printf("\nmeta data\n");
     printf("null read count: %d\n\n", flush_ct);
     printf("Trace data is saved to output/trace.out/dat\n");
@@ -111,7 +114,7 @@ int main(int argc, char *argv[])
     // initialize ETM
     config_etm_n(etms[0], 0, 1);
 
-    // fork a child to execute the target application. In this case, it is /bin/ls
+    // fork a child to execute the target application
     for (int i = 0; i < 1; i++)
     {
         target_pid = fork();
