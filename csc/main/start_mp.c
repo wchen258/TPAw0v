@@ -69,10 +69,10 @@ void poller()
     printf("Trace session ended. Poller print trace data:\n");
 
     // open a new file name trace.out and write the trace data to it.
-    FILE *fp = fopen("output/trace.out", "w");
+    FILE *fp = fopen("trace.out", "w");
 
     // open a new file to save binary version
-    FILE *fp_bin = fopen("output/trace.dat", "wb");
+    FILE *fp_bin = fopen("trace.dat", "wb");
 
     for (uint32_t i = 0; i < storage_ptr; i++)
     {
@@ -92,7 +92,8 @@ void poller()
 
     printf("\nmeta data\n");
     printf("null read count: %d\n\n", flush_ct);
-    printf("Trace data is saved to output/trace.out/dat\n");
+    printf("total read count: %d\n", storage_ptr);
+    printf("Trace data is saved to trace.out/dat\n");
 }
 
 int main(int argc, char *argv[])

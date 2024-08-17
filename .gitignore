@@ -1,2 +1,6 @@
-
+*.o
+*.out
+*.hum
+*.dat
+*.sh
 .DS_Store

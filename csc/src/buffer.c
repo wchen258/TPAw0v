@@ -37,7 +37,7 @@ void clear_buffer(uint64_t buf_addr, uint32_t buf_size)
 
 void dump_buffer(uint64_t buf_addr, uint32_t buf_size)
 {
-    printf("Dumping trace to output/trace.{out.dat}\n");
+    printf("Dumping trace to trace.{out.dat}\n");
     uint32_t *ptr = get_buf_ptr(buf_addr, buf_size);
     volatile uint32_t *buf = ptr;
     FILE *fp2 = fopen("trace.out", "w");

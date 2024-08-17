@@ -60,6 +60,49 @@ void cs_config_tmc1_softfifo() {
 }
 
 /*
+	The following config instructs TMC2 to store trace data to SRAM 
+*/
+void cs_config_SRAM() {
+	printf("Trace data path: TMC1 -> TMC2 -> SRAM.\n\n");
+
+	etms[0] = (ETM_interface *) cs_register(A53_0_etm);
+	etms[1] = (ETM_interface *) cs_register(A53_1_etm);
+	etms[2] = (ETM_interface *) cs_register(A53_2_etm);
+	etms[3] = (ETM_interface *) cs_register(A53_3_etm);
+    funnel1 = (Funnel_interface *) cs_register(Funnel1);
+    funnel2 = (Funnel_interface *) cs_register(Funnel2);
+    tmc1 = (TMC_interface *) cs_register(Tmc1);
+    tmc2 = (TMC_interface *) cs_register(Tmc2);
+
+	funnel_unlock(funnel1);
+	funnel_unlock(funnel2);
+	funnel_config_port(funnel1, 0xff, 0);
+	funnel_config_port(funnel2, 0xff, 0);
+
+	tmc_unlock(tmc1);
+	tmc_unlock(tmc2);
+
+	tmc_disable(tmc1);
+	tmc_disable(tmc2);
+
+	tmc_set_mode(tmc1, Hard);
+	tmc_set_mode(tmc2, Circular);
+
+	// enable formatter and trigger, trigger is not used though in this config
+	// whenever more than one core is being traced. The formatter is a must
+	tmc1->formatter_flush_ctrl = 0x3; 
+	tmc2->formatter_flush_ctrl = 0x3; 
+
+	tmc_set_axi(tmc1, 0xf);
+	tmc_set_axi(tmc2, 0xf);
+
+	tmc_enable(tmc1);
+	tmc_enable(tmc2);
+
+	return ;	
+}
+
+/*
 	The configuration uses TMC3 (ETR) in circular buffer mode to stream the trace data
 	to a user defined memory buffer.
 */
