@@ -3,6 +3,8 @@ The purpose of this repo is two-folds.
 
 First, it contains a theoretical-minimum setup to conduct ARM CoreSight ETM trace on ZCU102/Kria board (`csc`, `deformat`, `ETM_data_parser`). Second, it contains paritial implementation presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13) (`paper_imp`).
 
+## Basic Examples
+
 ### Recommanded: Start with the csc directory
 The program `start_mp` in `csc`, upon executing, configures the infrastructure necessary, runs a target program `./hello_ETM`, traces the target program, and prints out the trace data upon exiting. 
 
@@ -24,6 +26,13 @@ What does the program `start_mp` in `csc` do in details? It first configures Cor
 - Enable Formatter. Multiple ETM active. Using CTI to trigger flush upon some ETM defined Event happens.
 
 While on some boards, the ETR simply refuses to stream data to the downstream units. We suspect that this might be due to we are not following the manual completely. See Trace Memory Controller TRM for more details. 
+
+## Advanced Trace Feature
+ETM can interact with other CoreSight components such as Cross Trigger Interface (CTI) and Performance Monitor Unit (PMU)
+
+### ETM inserting Event Packet when receiving input from PMU, indicating architectural event
+For example, when a L2 cache miss occurs, PMU can send signal to ETM, and then ETM will indicates such an event as Event Packet into the trace data.
+`start_etm_pmu` illustrates such usage. If it does not work out-of-box, you might need to insert the kernel module provided in `support/enable_arm_pmu.c`. 
 
 ### Kernel Configuration ###
 The Linux on target has to be compile with certain flags to fully support trace. One [Lauterbach manual](https://www2.lauterbach.com/pdf/training_rtos_linux.pdf) details the configuration. Below is the summary.

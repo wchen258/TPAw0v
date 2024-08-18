@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "cs_etm.h"
+#include "cs_pmu.h"
 #include "cs_soc.h"
 #include "zcu_cs.h"
 
@@ -23,6 +24,8 @@ CTI_interface *cti0;
 CTI_interface *cti1;
 CTI_interface *cti2;
 
+PMU_interface *pmus[4];
+
 /*
 	The following config instruct the TMC1 to be used as a software FIFO
 	Other processing element (PE) can poll the TMC1 to read trace data
@@ -34,7 +37,6 @@ void cs_config_tmc1_softfifo() {
 	etms[1] = (ETM_interface *) cs_register(A53_1_etm);
 	etms[2] = (ETM_interface *) cs_register(A53_2_etm);
 	etms[3] = (ETM_interface *) cs_register(A53_3_etm);
-    replicator = (Replicator_interface *) cs_register(Replic);
     funnel1 = (Funnel_interface *) cs_register(Funnel1);
     funnel2 = (Funnel_interface *) cs_register(Funnel2);
     tmc1 = (TMC_interface *) cs_register(Tmc1);
@@ -46,6 +48,9 @@ void cs_config_tmc1_softfifo() {
 	// it seems at least one needs to be enabled to make the funnel work
 	funnel_config_port(funnel1, 0xff, 0);
 	funnel_config_port(funnel2, 0xff, 0);
+
+	munmap(funnel1, sizeof(Funnel_interface));
+	munmap(funnel2, sizeof(Funnel_interface));
 
 	tmc_unlock(tmc1);
 	tmc_disable(tmc1);
@@ -159,6 +164,30 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	tmc_enable(tmc3);
 
 	return ;
+}
+
+/*
+	This function assume the PMU is writtable in user space.
+	The support/enable_arm_pmu.c provides the kernel module to set PMU to be writtable in user space.
+	Run the kernel module before running this function.
+*/
+void config_pmu_enable_export() 
+{
+	printf("Configuring PMU to allow exporting architectural event to ETM\n");
+	pmus[0] = (PMU_interface *) cs_register(A53_0_pmu);
+	pmus[1] = (PMU_interface *) cs_register(A53_1_pmu);
+	pmus[2] = (PMU_interface *) cs_register(A53_2_pmu);
+	pmus[3] = (PMU_interface *) cs_register(A53_3_pmu);
+	
+	for(int i = 0; i < 4; i++)
+	{
+		pmus[i]->lock_access = 0xc5acce55;
+		pmus[i]->ctrl = 0x11;
+
+		munmap(pmus[i], sizeof(PMU_interface));
+	}
+
+
 }
 
 /*

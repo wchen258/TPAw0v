@@ -7,9 +7,6 @@ void cs_config_SRAM();
 void config_etm_n(ETM_interface* etm_n, int stall, int id);
 void config_etm_addr_event_test(ETM_interface*, uint64_t, uint64_t, uint64_t, uint64_t);
 void config_etm_single_pmu_event_test(ETM_interface*, int event_bus_num);
-
-
-
-
+void config_pmu_enable_export();
 
 #endif

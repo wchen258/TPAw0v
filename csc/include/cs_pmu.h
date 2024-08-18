@@ -9,7 +9,7 @@
 #define JOIN( symbol1, symbol2 ) _DO_JOIN( symbol1, symbol2 )
 #define _DO_JOIN( symbol1, symbol2 ) symbol1##symbol2
 
-typedef struct __attribute__((__packed__)) pmu_interface {
+typedef struct __attribute__((__packed__)) PMU_interface {
     uint32_t evt_ct_0;
     PAD(0x4, 0x8);
     uint32_t evt_ct_1;

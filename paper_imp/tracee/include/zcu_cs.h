@@ -49,13 +49,6 @@
 #define A53_3_PMU 0x730000
 #define A53_3_ETM 0x740000
 
-/**
-The address below are FPGA specific
-**/
-
-#define PL_LOW_DDR_ADDR 0xb0000000
-#define PL_LOW_DDR_SIZE 256*1024*1024
-
 #define CHECK(r,p) ( (r & 0x1 << (p) ) >> (p) )
 #define SET(r,p) ( r |= 0x1 << (p) ) 
 #define CLEAR(r,p) ( r &= ~(0x1 << (p) ) )
@@ -90,7 +83,10 @@ enum component {
     A53_0_etm,
     A53_1_etm,
     A53_2_etm,
-    A53_3_etm
+    A53_3_etm,
+    A53_1_pmu,
+    A53_2_pmu,
+    A53_3_pmu
     };
 
 void* cs_register(enum component);
