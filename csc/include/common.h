@@ -17,5 +17,7 @@ int write_mem(unsigned long physical_address, uint32_t data);
 void pin_to_core(uint8_t id);
 void linux_disable_cpuidle(void);
 int buff_read();
+void spawn_child(void (*func)());
+void poller();
 
 #endif

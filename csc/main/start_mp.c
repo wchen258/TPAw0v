@@ -31,70 +31,6 @@
 #include <time.h>
 
 extern ETM_interface *etms[4];
-extern TMC_interface *tmc1;
-
-/*
-    Poller waits until ETM is enabled.
-    Then it polls TMC1 (aka ETF1) to read trace data.
-    When ETM is disabled again, poller prints the trace data.
-*/
-void poller()
-{
-    pin_to_core(1);
-    const uint32_t storage_size = 1024 * 32;
-    uint32_t soft_fifo_storage[storage_size];
-    uint32_t storage_ptr = 0;
-    uint32_t flush_ct = 0;
-
-    while (etms[0]->prog_ctrl == 0);
-    while (etms[0]->prog_ctrl == 1 || !etm_is_idle(etms[0]) || !(tmc1->ram_write_pt == tmc1->ram_read_pt))
-    {
-        // When ETF is in Software FIFO mode, poll RRD register return new data or 0xffffffff if no new data
-        uint32_t tmp = tmc1->ram_read_data;
-        if (tmp == 0xffffffff)
-        {
-            // If there is no new data to read, trigger a flush to force output buffered data. But it will trash the bus with formatter padding (i.e. bunch of zeros)
-            // tmc1->formatter_flush_ctrl = 0x43; 
-            flush_ct++;
-        }
-        else
-        {
-            soft_fifo_storage[storage_ptr++] = tmp;
-            if (storage_ptr == storage_size)
-            {
-                while (etms[0]->prog_ctrl == 1);
-            }
-        }
-    }
-    printf("Trace session ended. Poller print trace data:\n");
-
-    // open a new file name trace.out and write the trace data to it.
-    FILE *fp = fopen("trace.out", "w");
-
-    // open a new file to save binary version
-    FILE *fp_bin = fopen("trace.dat", "wb");
-
-    for (uint32_t i = 0; i < storage_ptr; i++)
-    {
-        fprintf(fp, "0x%08x\n", soft_fifo_storage[i]);
-        fwrite(&soft_fifo_storage[i], sizeof(uint32_t), 1, fp_bin);
-    }
-
-    printf("Trace snippet 0 - 30 (line) \n");
-    for (uint32_t i = 0; i < storage_ptr; i++)
-    {
-        printf("0x%08x\n", soft_fifo_storage[i]);
-        if(i == 30) break;
-    }
-
-    fclose(fp);
-    fclose(fp_bin);
-
-    printf("\nmeta data\n");
-    printf("null read count: %d\n\n", flush_ct);
-    printf("total read count: %d\n", storage_ptr);
-    printf("Trace data is saved to trace.out/dat\n");
-}
 
 int main(int argc, char *argv[])
 {
@@ -129,18 +65,7 @@ int main(int argc, char *argv[])
             etm_set_contextid_cmp(etms[0], child_pid);
             etm_register_range(etms[0], 0x400000, 0x500000, 1);
 
-            // add a child process to poll RRD to read trace data
-            pid_t pid2 = fork();
-            if (pid2 == 0)
-            {
-                poller();
-                exit(0);
-            }
-            else if (pid2 < 0)
-            {
-                perror("fork");
-                exit(1);
-            }
+            spawn_child(poller);
 
             // Enable ETM, start trace session
             etm_enable(etms[0]);

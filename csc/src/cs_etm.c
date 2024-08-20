@@ -10,12 +10,78 @@
 
 #define ADDR(b, r) ((char *) (&b->r) - (char *) b)
 
+/*
+    Resource and Address Comparator can be used either as single or pair
+    When using as pair, the even index (starting from 0) and the next odd index are used as a pair
+    Thus when making a request, it's advised to use the _request function below
+    When requesting pair, the index is taken from below
+    When requesting single, the index is taken from above to resolve the conflict
+*/
 int avail_addr_cmp_high = 7 ;
 int avail_addr_cmp_low = 0 ;
 int avail_rs_high = 15 ;
 int avail_rs_low = 2 ;
 int avail_ext_sel_low = 0;
 int avail_ext_sel_high = 3;
+
+int _request_addr_cmp()
+{
+    if (avail_addr_cmp_high >= avail_addr_cmp_low)
+        return avail_addr_cmp_high -- ;
+    else {
+        fprintf(stderr, "Error: More than 8 Address Comparator requested!\n");
+        exit(1);
+    }
+}
+
+/*
+    Check if there is enough address comparator available
+    if so, return the index of the first address comparator
+*/
+int _request_addr_cmp_pair()
+{
+    if ((avail_addr_cmp_low + 1) <= avail_addr_cmp_high) {
+        int base_pair_num = avail_addr_cmp_low ;
+        avail_addr_cmp_low += 2 ;
+        return base_pair_num ;
+    } else {
+        fprintf(stderr, "Error: More than 8 Addreses Comparator requested while requesting a address pair!\n");
+        exit(1);
+    }
+}
+
+int _request_rs()
+{
+    if (avail_rs_high >= avail_rs_low)
+        return avail_rs_high -- ;
+    else {
+        fprintf(stderr, "Error: More than 14 Resource Selector requeste while requesting a single rs.\n");
+        exit(1);
+    }
+}
+
+int _request_rs_pair()
+{
+    if ((avail_rs_low + 1) <= avail_rs_high) {
+        int base_pair_num = avail_rs_low ;
+        avail_rs_low += 2 ;
+        return base_pair_num ;
+    } else {
+        fprintf(stderr, "Error: More than 14 Resource Selector requested while requesting a rs pair!\n");
+        exit(1);
+    }
+}
+
+/* return next available External Input Selector index */
+int _request_ext_sel()
+{
+    if (avail_ext_sel_high >= avail_ext_sel_low)
+        return avail_ext_sel_high -- ;
+    else {
+        fprintf(stderr, "Error: More than 4 External Input Seletor requeste while requesting a single Ext Sel.\n");
+        exit(1);
+    }
+}
 
 void etm_implementation_info(ETM_interface *etm)
 {
@@ -98,61 +164,14 @@ void etm_reset(ETM_interface *etm)
         etm->virtual_contextid_cmp_val[i] = 0;
     }
 
+    for(i=0; i<4; i++) {
+        etm->counter_ctrl[i] = 0;
+        etm->counter_reload_val[i] = 0;
+        etm->counter_val[i] = 0;
+    }
+
 }
 
-int _request_addr_cmp()
-{
-    if (avail_addr_cmp_high >= avail_addr_cmp_low)
-        return avail_addr_cmp_high -- ;
-    else {
-        fprintf(stderr, "Error: More than 8 Address Comparator requested!\n");
-        exit(1);
-    }
-}
-
-int _request_addr_cmp_pair()
-{
-    if ((avail_addr_cmp_low + 1) <= avail_addr_cmp_high) {
-        int base_pair_num = avail_addr_cmp_low ;
-        avail_addr_cmp_low += 2 ;
-        return base_pair_num ;
-    } else {
-        fprintf(stderr, "Error: More than 8 Addreses Comparator requested while requesting a address pair!\n");
-        exit(1);
-    }
-}
-
-int _request_rs()
-{
-    if (avail_rs_high >= avail_rs_low)
-        return avail_rs_high -- ;
-    else {
-        fprintf(stderr, "Error: More than 14 Resource Selector requeste while requesting a single rs.\n");
-        exit(1);
-    }
-}
-
-int _request_rs_pair()
-{
-    if ((avail_rs_low + 1) <= avail_rs_high) {
-        int base_pair_num = avail_rs_low ;
-        avail_rs_low += 2 ;
-        return base_pair_num ;
-    } else {
-        fprintf(stderr, "Error: More than 14 Resource Selector requested while requesting a rs pair!\n");
-        exit(1);
-    }
-}
-
-int _request_ext_sel()
-{
-    if (avail_ext_sel_high >= avail_ext_sel_low)
-        return avail_ext_sel_high -- ;
-    else {
-        fprintf(stderr, "Error: More than 4 External Input Seletor requeste while requesting a single Ext Sel.\n");
-        exit(1);
-    }
-}
 
 /*
     int cci: [4, 2^12 = 4096]
@@ -223,23 +242,22 @@ void etm_set_addr_cmp(ETM_interface *etm, int num, uint64_t addr, int cmp_contex
     CLEAR(etm->addr_cmp_access_type[num], 3);
 }
 
-void etm_set_range(ETM_interface *etm, int pair_num, uint64_t start_addr, uint64_t end_addr, int cmp_contextid)
-{
-    int addr_cmp_index = 2 * (pair_num - 1);
-    etm_set_addr_cmp(etm, addr_cmp_index, start_addr, cmp_contextid);
-    etm_set_addr_cmp(etm, addr_cmp_index + 1, end_addr, cmp_contextid);
-    SET(etm->vi_ie_ctrl, pair_num - 1);
-}
+// void etm_set_range(ETM_interface *etm, int pair_num, uint64_t start_addr, uint64_t end_addr, int cmp_contextid)
+// {
+//     int addr_cmp_index = 2 * (pair_num - 1);
+//     etm_set_addr_cmp(etm, addr_cmp_index, start_addr, cmp_contextid);
+//     etm_set_addr_cmp(etm, addr_cmp_index + 1, end_addr, cmp_contextid);
+//     SET(etm->vi_ie_ctrl, pair_num - 1);
+// }
 
 void etm_register_range(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr, int cmp_contextid)
 {
-    // why not use the function above.... but why...
-    int pair_num = _request_addr_cmp_pair();
-    etm_set_range(etm, (pair_num / 2) + 1, start_addr, end_addr, cmp_contextid);
-    // int addr_cmp_index_base = _request_addr_cmp_pair();
-    // etm_set_addr_cmp(etm, addr_cmp_index_base, start_addr, cmp_contextid);
-    // etm_set_addr_cmp(etm, addr_cmp_index_base + 1, end_addr, cmp_contextid);
-    // SET(etm->vi_ie_ctrl, addr_cmp_index_base / 2);
+    // int pair_num = _request_addr_cmp_pair();
+    // etm_set_range(etm, (pair_num / 2) + 1, start_addr, end_addr, cmp_contextid);
+    int addr_cmp_index_base = _request_addr_cmp_pair();
+    etm_set_addr_cmp(etm, addr_cmp_index_base, start_addr, cmp_contextid);
+    etm_set_addr_cmp(etm, addr_cmp_index_base + 1, end_addr, cmp_contextid);
+    SET(etm->vi_ie_ctrl, addr_cmp_index_base / 2);
 }
 
 void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr)
@@ -277,7 +295,7 @@ void etm_set_ext_input(ETM_interface *etm, int event_bus_num, int selector)
     rs_group : see header. For PMU event, use External_input
     r1       : According to the group, r1 represents the corresponding sub-resource number
     r2       : only Couter&Sequencer share the same group. Thus if the chosen group is not this, r2 would be ignored
-               otherwise, r2 represents the Sequencer number
+               otherwise, r2 represents the Sequencer number. Explicitly r2=-1 if sequencer is not used
     inv      : Whether inverse the results
     pair_inv : Whether inverse the combined result from pair resources
 */
@@ -289,7 +307,9 @@ void etm_set_rs(ETM_interface *etm, int rs_num, enum rs_group group, int r1, int
     }
     if (group == Counter_Seq) {
         SET(etm->resource_sel_ctrl[rs_num], r1);
-        SET(etm->resource_sel_ctrl[rs_num], r2 + 4);
+        if (r2 >= 0) {
+            SET(etm->resource_sel_ctrl[rs_num], r2 + 4);
+        }
     } else 
         SET(etm->resource_sel_ctrl[rs_num], r1);
     etm->resource_sel_ctrl[rs_num] |= group << 16 ;
@@ -395,6 +415,31 @@ void etm_register_pmu_event(ETM_interface *etm, int event_bus)
 #ifdef VERBOSE
     printf("External Input: \n    Event Bus Number %d -> Event Packet Pos: %d\n    RS: %d  Ext Sel: %d\n", event_bus, ext_num, rs_num, ext_num);
 #endif
+}
+
+void etm_counter(ETM_interface* etm, int event_bus, uint16_t counter_val)
+{
+    int rs_num = _request_rs();
+    // when event indicated by resource [rs_num] occurs, counter 0 is decremented
+    etm->counter_ctrl[0] = rs_num;
+    // set the initial value of the cnt
+    etm->counter_val[0] = counter_val;
+
+    // request a external input selector
+    int ext_num = _request_ext_sel();
+    // let the resource rs_num hooked to the external input selector when PMU fires event_bus
+    etm_set_rs(etm, rs_num, External_input, ext_num, -1, 0, 0);
+    etm_set_ext_input(etm, event_bus, ext_num);
+
+    // make cnt self-load
+    etm->counter_ctrl[0] |= 0x1 << 16; 
+    etm->counter_reload_val[0] = counter_val;
+
+    printf("INFO: etm_counter\n");
+    printf("rs_num: %d\n", rs_num);
+    printf("ext_num: %d\n", ext_num);
+
+    // if everything is correct, then I should see the counter decrements gradually
 }
 
 void etm_register_single_addr_match_event(ETM_interface *etm, uint64_t addr) 

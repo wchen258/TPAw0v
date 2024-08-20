@@ -1,5 +1,5 @@
 /*
-    Brief: adapted from start_mp.c, this demo also illustrates how to insert PMU event into trace data.
+    Brief: adapted from start_mp.c, this demo also illustrates how to emit Event Packet when PMU event happens for a defined number of times.
 
     This demo should run on ZCU102/Kria board as long as the APU has linux running.
 
@@ -64,10 +64,12 @@ int main(int argc, char *argv[])
             // further configure ETM. So that it will only trace the process with pid == child_pid/target_pid
             // with the program counter in the range of 0x400000 to 0x500000
             etm_set_contextid_cmp(etms[0], child_pid);
-            etm_register_range(etms[0], 0x400000, 0x500000, 1);
+            // etm_register_range(etms[0], 0x400000, 0x500000, 1);
+            etm_register_range(etms[0], 0x400000, 0x400000, 1);
 
-            // When L2 cache miss happens, PMU send an input to ETM, ETM then generates an Event trace packet.
-            etm_register_pmu_event(etms[0], L2D_CACHE_REFILL_T);
+            etm_counter(etms[0], L2D_CACHE_REFILL_T, 65535);
+
+            printf("Initial ETM[0] counter value: %d\n", etms[0]->counter_val[0]);
 
             // add a child process to poll RRD to read trace data
             spawn_child(poller);
@@ -93,6 +95,9 @@ int main(int argc, char *argv[])
 
     // Disable ETM, our trace session is done. Poller will print trace data.
     etm_disable(etms[0]);
+
+    // print the result ETM counter value
+    printf("result ETM[0] counter value: %d\n", etms[0]->counter_val[0]);
 
     return 0;
 }

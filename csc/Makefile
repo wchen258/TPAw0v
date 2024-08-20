@@ -1,7 +1,7 @@
 CFLAGS = -Iinclude -Wall -lpthread -no-pie
 SRC_FILES := $(wildcard src/*.c)
 O_FILES := $(patsubst src/%.c,src/%.o,$(SRC_FILES))
-MAIN_FILES := start_mp start_etr hello_ETM start_sram start_etm_pmu
+MAIN_FILES := start_mp start_etr hello_ETM start_sram start_etm_pmu start_cnt_pmu_event
 
 # Determine the compiler based on architecture
 ifeq ($(shell uname -m),aarch64)

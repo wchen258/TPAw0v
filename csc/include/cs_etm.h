@@ -82,7 +82,7 @@
 #define JOIN( symbol1, symbol2 ) _DO_JOIN( symbol1, symbol2 )
 #define _DO_JOIN( symbol1, symbol2 ) symbol1##symbol2
 
-enum rs_group {External_input, PE_comparator, Counter_Seq, Single_shot, Single_addr, Contextid, Virtual_context};
+enum rs_group {External_input, PE_comparator, Counter_Seq, Single_shot, Single_addr, Addr_Range, Contextid, Virtual_context};
 
 
 typedef struct __attribute__((__packed__)) etm_interface {
@@ -220,7 +220,7 @@ void etm_set_branch_broadcast(ETM_interface*, int, uint8_t);
 void etm_set_addr_cmp(ETM_interface*, int, uint64_t, int);
 void etm_set_contextid_cmp(ETM_interface*, uint64_t);
 void etm_set_return_stack(ETM_interface*);
-void etm_set_range(ETM_interface*, int, uint64_t, uint64_t, int);
+// void etm_set_range(ETM_interface*, int, uint64_t, uint64_t, int);
 void etm_set_ext_input(ETM_interface*, int, int);
 void etm_set_rs(ETM_interface*, int, enum rs_group, int, int, int, int);
 void etm_set_event_sel_0(ETM_interface*, int rs_num, int pair);
@@ -233,6 +233,7 @@ void etm_register_pmu_event(ETM_interface *, int event_bus);
 void etm_register_range(ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
 void etm_register_single_addr_match_event(ETM_interface *, uint64_t);
 void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr);
+void etm_counter(ETM_interface* etm, int event_bus, uint16_t counter_val);
 
 
 #endif
