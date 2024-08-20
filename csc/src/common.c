@@ -54,9 +54,9 @@ void poller()
             // If there is no new data to read, trigger a flush to force output buffered data. But it will trash the bus with formatter padding (i.e. bunch of zeros)
             // tmc1->formatter_flush_ctrl = 0x43; 
             flush_ct++;
-            if (flush_ct % 100 == 0)
+            if (flush_ct % 10 == 0)
             {
-                printf("%d\n", etms[0]->counter_val[0]);
+                // etm_print_larger_counter(etms[0], 0); // it's very hacky, but you can print cnt value at runtime
             }
         }
         else

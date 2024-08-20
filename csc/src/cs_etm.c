@@ -7,6 +7,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <assert.h>
 
 #define ADDR(b, r) ((char *) (&b->r) - (char *) b)
 
@@ -24,7 +25,7 @@ int avail_rs_low = 2 ;
 int avail_ext_sel_low = 0;
 int avail_ext_sel_high = 3;
 
-int _request_addr_cmp()
+static int _request_addr_cmp()
 {
     if (avail_addr_cmp_high >= avail_addr_cmp_low)
         return avail_addr_cmp_high -- ;
@@ -38,7 +39,7 @@ int _request_addr_cmp()
     Check if there is enough address comparator available
     if so, return the index of the first address comparator
 */
-int _request_addr_cmp_pair()
+static int _request_addr_cmp_pair()
 {
     if ((avail_addr_cmp_low + 1) <= avail_addr_cmp_high) {
         int base_pair_num = avail_addr_cmp_low ;
@@ -50,7 +51,7 @@ int _request_addr_cmp_pair()
     }
 }
 
-int _request_rs()
+static int _request_rs()
 {
     if (avail_rs_high >= avail_rs_low)
         return avail_rs_high -- ;
@@ -60,7 +61,7 @@ int _request_rs()
     }
 }
 
-int _request_rs_pair()
+__attribute__((unused)) static int _request_rs_pair() 
 {
     if ((avail_rs_low + 1) <= avail_rs_high) {
         int base_pair_num = avail_rs_low ;
@@ -73,7 +74,7 @@ int _request_rs_pair()
 }
 
 /* return next available External Input Selector index */
-int _request_ext_sel()
+static int _request_ext_sel()
 {
     if (avail_ext_sel_high >= avail_ext_sel_low)
         return avail_ext_sel_high -- ;
@@ -364,7 +365,7 @@ void etm_set_event_sel_3(ETM_interface *etm, int rs_num, int pair)
         CLEAR(etm->event_ctrl_0, 31);
 }
 
-void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int pair)
+static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int pair)
 {
     switch(sel_num) {
         case 0:
@@ -417,8 +418,9 @@ void etm_register_pmu_event(ETM_interface *etm, int event_bus)
 #endif
 }
 
-void etm_counter(ETM_interface* etm, int event_bus, uint16_t counter_val)
+void etm_example_single_counter(ETM_interface* etm, int event_bus, uint16_t counter_val)
 {
+    printf("Running example: Single counter counting Event Bus %d with reload %u \n", event_bus, counter_val);
     int rs_num = _request_rs();
     // when event indicated by resource [rs_num] occurs, counter 0 is decremented
     etm->counter_ctrl[0] = rs_num;
@@ -441,6 +443,70 @@ void etm_counter(ETM_interface* etm, int event_bus, uint16_t counter_val)
 
     // if everything is correct, then I should see the counter decrements gradually
 }
+
+void etm_example_single_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val)
+{
+    printf("Running example: Single counter counting Event Bus %d with reload %u and fire Event\n", event_bus, counter_val);
+    printf("Reuse example from:\n");
+    etm_example_single_counter(etm, event_bus, counter_val);
+
+    // fire the event
+    int rs_num_fire = _request_rs();
+    etm_set_rs(etm, rs_num_fire, Counter_Seq, 0, -1, 0, 0);
+
+    // register the fire resource to event packet
+    int position_in_event_packet = 3;
+    etm_set_event_sel(etm, position_in_event_packet, rs_num_fire, 0);
+    etm_set_event_trc(etm, 0x1 << position_in_event_packet, 0);
+
+    printf("rs_num_fire: %d\n", rs_num_fire);
+
+}
+
+
+
+void etm_set_large_counter(ETM_interface* etm, int cnt_base_index, uint32_t val)
+{
+    // when forming larger counter by using two counters, the cnt_base_index should be even. On Cortex-A53, only two cnts are available
+    // thus the only valid value is 0
+    assert(cnt_base_index == 0);
+    etm->counter_val[cnt_base_index] = val;
+    etm->counter_val[cnt_base_index + 1] = val >> 16;
+    etm->counter_reload_val[cnt_base_index] = val;
+    etm->counter_reload_val[cnt_base_index + 1] = val >> 16;
+
+    etm->counter_ctrl[cnt_base_index] |= 0x1 << 16; // self-reload
+    etm->counter_ctrl[cnt_base_index + 1] |= 0x1 << 16; // self-reload
+    etm->counter_ctrl[cnt_base_index + 1] |= 0x1 << 17; // forming a larger counter 
+}
+
+void etm_print_larger_counter(ETM_interface* etm, int cnt_base_index)
+{
+    printf("%10d\n", etm->counter_val[cnt_base_index] | (etm->counter_val[cnt_base_index + 1] << 16));
+}
+
+void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t counter_val)
+{
+    printf("Large counter counting Evnet Bus %d\n", event_bus);
+    printf("Reload value: %d\n", counter_val);
+    printf("WARNING: read counter value when ETM is active might return unstable value!\n");
+
+    int rs_num = _request_rs();
+
+    // when event indicated by resource [rs_num] occurs, counter 0 is decremented
+    etm->counter_ctrl[0] = rs_num;
+
+    // request a external input selector
+    int ext_num = _request_ext_sel();
+
+    // let the resource rs_num hooked to the external input selector when PMU fires event_bus
+    etm_set_rs(etm, rs_num, External_input, ext_num, -1, 0, 0);
+    etm_set_ext_input(etm, event_bus, ext_num);
+
+    etm_set_large_counter(etm, 0, counter_val);
+}
+
+
 
 void etm_register_single_addr_match_event(ETM_interface *etm, uint64_t addr) 
 {

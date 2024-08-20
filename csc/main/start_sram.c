@@ -12,26 +12,14 @@
     Date: 2024-08-17
 */
 
-
 #define _GNU_SOURCE
-#include "buffer.h"
+#include <stdio.h>
+#include <sys/wait.h>
+#include "common.h"
+#include "pmu_event.h"
 #include "cs_etm.h"
 #include "cs_config.h"
 #include "cs_soc.h"
-#include <fcntl.h>
-#include <sched.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <errno.h>
-#include "bin_loader.h"
-#include "common.h"
-#include <sys/sysinfo.h>
-#include <time.h>
 
 extern ETM_interface *etms[4];
 extern TMC_interface *tmc2;

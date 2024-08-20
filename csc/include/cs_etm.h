@@ -228,12 +228,13 @@ void etm_set_event_sel_1(ETM_interface*, int, int);
 void etm_set_event_sel_2(ETM_interface*, int, int);
 void etm_set_event_sel_3(ETM_interface*, int, int);
 void etm_set_event_trc(ETM_interface*, int mask, int atb);
-void etm_set_event_sel(ETM_interface*, int sel_num, int rs_num, int pair);
+// void etm_set_event_sel(ETM_interface*, int sel_num, int rs_num, int pair);
 void etm_register_pmu_event(ETM_interface *, int event_bus);
 void etm_register_range(ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
 void etm_register_single_addr_match_event(ETM_interface *, uint64_t);
 void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr);
-void etm_counter(ETM_interface* etm, int event_bus, uint16_t counter_val);
-
-
+void etm_example_single_counter(ETM_interface* etm, int event_bus, uint16_t counter_val);
+void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t counter_val);
+void etm_print_larger_counter(ETM_interface* etm, int cnt_base_index);
+void etm_example_single_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val);
 #endif

@@ -1,32 +1,31 @@
 /*
-    Brief: adapted from start_mp.c, this demo also illustrates how to emit Event Packet when PMU event happens for a defined number of times.
+    Brief: adapted from start_mp.c, this demo also illustrates 
+        how to emit Event Packet in trace stream when a user-chosen PMU event happens for a user-defined number of times.
 
     This demo should run on ZCU102/Kria board as long as the APU has linux running.
 
     Author: Weifan Chen
-    Date: 2024-08-10
+    Date: 2024-08-20
+*/
+
+/*
+    Some observations:
+        The address range can toggle the trace-on and trace-off.
+        However, the emit of Event Packet is independent of the trace-on/trace-off state.
+        When the event occurs, the ETM will send synchronization plus event packet. 
+
+        This demo the poller does NOT attempt to flush the TMC at all.
+        It's unclear whether the real-time property is preserved.
 */
 
 
 #define _GNU_SOURCE
+#include <stdio.h>
+#include <sys/wait.h>
+#include "common.h"
+#include "pmu_event.h"
 #include "cs_etm.h"
 #include "cs_config.h"
-#include "cs_soc.h"
-#include <fcntl.h>
-#include <sched.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <unistd.h>
-#include <errno.h>
-#include "bin_loader.h"
-#include "common.h"
-#include <sys/sysinfo.h>
-#include <time.h>
-#include "pmu_event.h"
 
 extern ETM_interface *etms[4];
 
@@ -62,14 +61,10 @@ int main(int argc, char *argv[])
             uint64_t child_pid = (uint64_t) getpid();
 
             // further configure ETM. So that it will only trace the process with pid == child_pid/target_pid
-            // with the program counter in the range of 0x400000 to 0x500000
             etm_set_contextid_cmp(etms[0], child_pid);
-            // etm_register_range(etms[0], 0x400000, 0x500000, 1);
-            etm_register_range(etms[0], 0x400000, 0x400000, 1);
+            etm_register_range(etms[0], 0x401144, 0x401144, 1); // this address is supposed to be the first instruction in <main>
 
-            etm_counter(etms[0], L2D_CACHE_REFILL_T, 65535);
-
-            printf("Initial ETM[0] counter value: %d\n", etms[0]->counter_val[0]);
+            etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
 
             // add a child process to poll RRD to read trace data
             spawn_child(poller);
@@ -95,9 +90,6 @@ int main(int argc, char *argv[])
 
     // Disable ETM, our trace session is done. Poller will print trace data.
     etm_disable(etms[0]);
-
-    // print the result ETM counter value
-    printf("result ETM[0] counter value: %d\n", etms[0]->counter_val[0]);
 
     return 0;
 }
