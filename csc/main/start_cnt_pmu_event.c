@@ -51,7 +51,7 @@ int main(int argc, char *argv[])
     // initialize ETM
     config_etm_n(etms[0], 0, 1);
 
-    // fork a child to execute the target application
+    // fork a child to execute the target application. 
     for (int i = 0; i < 1; i++)
     {
         target_pid = fork();
@@ -64,7 +64,12 @@ int main(int argc, char *argv[])
             etm_set_contextid_cmp(etms[0], child_pid);
             etm_register_range(etms[0], 0x401144, 0x401144, 1); // this address is supposed to be the first instruction in <main>
 
-            etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
+            // choose one example to run
+            //      example 1: use one counter (16-bit)
+            // etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
+
+            //      example 2: use two counters to form a 32 bit counter
+            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 100000); 
 
             // add a child process to poll RRD to read trace data
             spawn_child(poller);

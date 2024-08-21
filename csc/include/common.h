@@ -19,5 +19,6 @@ void linux_disable_cpuidle(void);
 int buff_read();
 void spawn_child(void (*func)());
 void poller();
+uint32_t wrmem(char* bin_name, unsigned long addr);
 
 #endif
