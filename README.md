@@ -30,11 +30,14 @@ While on some boards, the ETR simply refuses to stream data to the downstream un
 ## Advanced Trace Feature
 ETM can interact with other CoreSight components such as Cross Trigger Interface (CTI) and Performance Monitor Unit (PMU)
 
-### ETM inserting Event Packet when receiving input from PMU, indicating architectural event
+### ETM inserting an Event Packet upon Input from PMU
 For example, when a L2 cache miss occurs, PMU can send signal to ETM, and then ETM will indicates such an event as Event Packet into the trace data.
 `start_etm_pmu` illustrates such usage. If it does not work out-of-box, you might need to insert the kernel module provided in `support/enable_arm_pmu.c`. 
 
-### Kernel Configuration ###
+### ETM inserting an Event Packet upon a user-defined number of Inputs from PMU
+Continuing the example above, `start_cnt_pmu_event` fires an Event Packet to trace stream, for every **user-defined-number** L2 cache miss indicated by PMU. When monitoring a rather frequent signal from PMU, this is the recommanded approach. Because if we allow one Event Packet to be generated for each signal, overflow can occur for ETM.  
+
+## Kernel Configuration ###
 The Linux on target has to be compile with certain flags to fully support trace. One [Lauterbach manual](https://www2.lauterbach.com/pdf/training_rtos_linux.pdf) details the configuration. Below is the summary.
 
 ```
