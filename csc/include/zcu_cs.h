@@ -51,12 +51,7 @@
 #define A53_3_PMU 0x730000
 #define A53_3_ETM 0x740000
 
-/**
-The address below are FPGA specific
-**/
 
-#define PL_LOW_DDR_ADDR 0xb0000000
-#define PL_LOW_DDR_SIZE 256*1024*1024
 
 // #define CHECK(r,p) ( (r & 0x1 << (p) ) >> (p) )
 // #define SET(r,p) ( r |= 0x1 << (p) ) 

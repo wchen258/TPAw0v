@@ -5,27 +5,27 @@
 #include "cs_soc.h"
 #include "zcu_cs.h"
 
-ETM_interface *etms[4];
-Replicator_interface *replicator;
-Funnel_interface *funnel1;
-Funnel_interface *funnel2;
-TMC_interface *tmc1;
-TMC_interface *tmc2;
-TMC_interface *tmc3;
-TPIU_interface *tpiu;
+ETM_interface *etms[4] = {NULL, NULL, NULL, NULL};
+Replicator_interface *replicator = NULL;
+Funnel_interface *funnel1 = NULL;
+Funnel_interface *funnel2 = NULL;
+TMC_interface *tmc1 = NULL;
+TMC_interface *tmc2 = NULL;
+TMC_interface *tmc3 = NULL;
+TPIU_interface *tpiu = NULL;
 
-CTI_interface *r0_cti;
-CTI_interface *r1_cti;
-CTI_interface *a0_cti;
-CTI_interface *a1_cti;
-CTI_interface *a2_cti;
-CTI_interface *a3_cti;
+CTI_interface *r0_cti = NULL;
+CTI_interface *r1_cti = NULL;
+CTI_interface *a0_cti = NULL;
+CTI_interface *a1_cti = NULL;
+CTI_interface *a2_cti = NULL;
+CTI_interface *a3_cti = NULL;
 
-CTI_interface *cti0;
-CTI_interface *cti1;
-CTI_interface *cti2;
+CTI_interface *cti0 = NULL;
+CTI_interface *cti1 = NULL;
+CTI_interface *cti2 = NULL;
 
-PMU_interface *pmus[4];
+PMU_interface *pmus[4] = {NULL, NULL, NULL, NULL};
 
 /*
 	The following config instruct the TMC1 to be used as a software FIFO
