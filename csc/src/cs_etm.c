@@ -254,11 +254,6 @@ void etm_set_stall(ETM_interface *etm, int level)
     }
 }
 
-// void etm_set_return_stack(ETM_interface *etm)
-// {
-//     return ;
-// }
-
 void etm_set_branch_broadcast(ETM_interface *etm, int inv, uint8_t mask)
 {
     SET(etm->trace_config, 3);
@@ -329,49 +324,15 @@ static void etm_set_rs(ETM_interface *etm, int rs_num, enum rs_group group, int 
         SET(etm->resource_sel_ctrl[rs_num], 21);
 }
 
-
-static void etm_set_event_sel_0(ETM_interface *etm, int rs_num, int pair)
+static void etm_set_event_sel_n(ETM_interface *etm, int rs_num, int pair, int n)
 {
     if (rs_num <2)
         printf("WARNING: Resource Selector 0,1 is used for event trace. This is not common, unless intended.\n");
-    etm->event_ctrl_0 |= rs_num ;
+    etm->event_ctrl_0 |= rs_num << (8*n);
     if (pair)
-        SET(etm->event_ctrl_0, 7);
+        SET(etm->event_ctrl_0, 7 + 8*n);
     else
-        CLEAR(etm->event_ctrl_0, 7);
-}
-
-static void etm_set_event_sel_1(ETM_interface *etm, int rs_num, int pair)
-{
-    if (rs_num <2)
-        printf("WARNING: Resource Selector 0,1 is used for event trace. This is not common, unless intended.\n");
-    etm->event_ctrl_0 |= rs_num << 8 ;
-    if (pair)
-        SET(etm->event_ctrl_0, 15);
-    else
-        CLEAR(etm->event_ctrl_0, 15);
-}
-
-static void etm_set_event_sel_2(ETM_interface *etm, int rs_num, int pair)
-{
-    if (rs_num <2)
-        printf("WARNING: Resource Selector 0,1 is used for event trace. This is not common, unless intended.\n");
-    etm->event_ctrl_0 |= rs_num << 16 ;
-    if (pair)
-        SET(etm->event_ctrl_0, 23);
-    else
-        CLEAR(etm->event_ctrl_0, 23);
-}
-
-static void etm_set_event_sel_3(ETM_interface *etm, int rs_num, int pair)
-{
-    if (rs_num <2)
-        printf("WARNING: Resource Selector 0,1 is used for event trace. This is not common, unless intended.\n");
-    etm->event_ctrl_0 |= rs_num << 24;
-    if (pair)
-        SET(etm->event_ctrl_0, 31);
-    else
-        CLEAR(etm->event_ctrl_0, 31);
+        CLEAR(etm->event_ctrl_0, 7 + 8*n);
 }
 
 static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int pair)
@@ -380,24 +341,8 @@ static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int p
     if (pair) {
         true_num = rs_num / 2;
     }
-    switch(sel_num) {
-        case 0:
-            etm_set_event_sel_0(etm, true_num, pair);
-            break;
-        case 1:
-            etm_set_event_sel_1(etm, true_num, pair);
-            break;
-        case 2:
-            etm_set_event_sel_2(etm, true_num, pair);
-            break;
-        case 3:
-            etm_set_event_sel_3(etm, true_num, pair);
-            break;
-
-        default:
-            fprintf(stderr, "ERROR: Invalied Event Selector nuber.\n");
-            exit(1);
-    }
+    assert(sel_num < 4 && sel_num >= 0);
+    etm_set_event_sel_n(etm, true_num, pair, sel_num);
 }
 
 /*
