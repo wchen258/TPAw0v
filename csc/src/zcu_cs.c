@@ -43,6 +43,9 @@ void* cs_register(enum component comp)
             ptr = mmap(NULL, sizeof(Replicator_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + REPLIC);
             break;
         case Tpiu:
+            printf("IMPORTANT NOTICE!\n");
+            printf("If you are trying to use TPIU, then on ZCU102/Kria, you need to connect jumper J88\n");
+            printf("Reference https://support.xilinx.com/s/article/66669?language=en_US\n");
             ptr = mmap(NULL, sizeof(TPIU_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + TPIU);
             break;
         case Cti0:

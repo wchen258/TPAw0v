@@ -96,6 +96,7 @@ void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
 
 }
 
+// Below are functions for debug purpose
 
 void cti_report(CTI_interface *cti) {
     printf("CTI report Start\n");
@@ -104,4 +105,113 @@ void cti_report(CTI_interface *cti) {
     printf("trigger out status %x\n", cti->trig_out_status);
     printf("Channel In Status  %x\n", cti->channel_in_status);
     printf("Channel Out Status %x\n", cti->channel_out_status);
+}
+
+
+void replicator_report(Replicator_interface* repl) {
+    printf("Replicator report Start\n");
+    printf("id_filter_atb_master_p_0 %x\n", repl->id_filter_atb_master_p_0);
+    printf("id_filter_atb_master_p_1 %x\n", repl->id_filter_atb_master_p_1);
+    printf("integration_mode_atb_ctrl_0 %x\n", repl->integration_mode_atb_ctrl_0);
+    printf("integration_mode_atb_ctrl_1 %x\n", repl->integration_mode_atb_ctrl_1);
+    printf("integration_mode_ctrl %x\n", repl->integration_mode_ctrl);
+    printf("claim_tag_set %x\n", repl->claim_tag_set);
+    printf("claim_tag_clear %x\n", repl->claim_tag_clear);
+    printf("lock_access %x\n", repl->lock_access);
+    printf("lock_status %x\n", repl->lock_status);
+    printf("auth_status %x\n", repl->auth_status);
+    printf("dev_config %x\n", repl->dev_config);
+    printf("dev_type_identifier %x\n", repl->dev_type_identifier);
+    printf("peri_id_4 %x\n", repl->peri_id_4);
+    printf("peri_id_0 %x\n", repl->peri_id_0);
+    printf("peri_id_1 %x\n", repl->peri_id_1);
+    printf("peri_id_2 %x\n", repl->peri_id_2);
+    printf("peri_id_3 %x\n", repl->peri_id_3);
+    printf("comp_id_0 %x\n", repl->comp_id_0);
+    printf("comp_id_1 %x\n", repl->comp_id_1);
+    printf("comp_id_2 %x\n", repl->comp_id_2);
+    printf("comp_id_3 %x\n", repl->comp_id_3);
+}
+
+void explain_tmc_STS(uint32_t sts_reg) {
+    printf("==== TMC STS register ====\n");
+    printf("Value %x\n", sts_reg);
+    printf("Full %d\n", (sts_reg & 0x1));
+    printf("Triggered %d\n", (sts_reg & 0x2) >> 1);
+    printf("TMCReady %d\n", (sts_reg & 0x4) >> 2);
+    printf("FtEmpty %d\n", (sts_reg & 0x8) >> 3);  
+    printf("Empty %d\n", (sts_reg & 0x10) >> 4);
+    printf("MemErr %d\n", (sts_reg & 0x20) >> 5);
+    printf("==== END ====\n");
+}
+
+void explain_tmc_FFSR(uint32_t ffsr_reg) {
+    printf("==== TMC FFSR register ====\n");
+    printf("Value %x\n", ffsr_reg);
+    printf("FlInProg[0] %d\n", (ffsr_reg & 0x1));
+    printf("FtStopped[1] (same as FtEmpty in STS) %d\n", (ffsr_reg & 0x2) >> 1);
+    printf("==== END ====\n");
+}
+
+void tmc_report(TMC_interface* tmc, int tmc_index) {
+    printf("**** TMC %d report Start ****\n", tmc_index);
+    printf("ram_size %x\n", tmc->ram_size);
+    // printf("status %x\n", tmc->status);
+    explain_tmc_STS(tmc->status);
+    printf("ram_read_pt %x\n", tmc->ram_read_pt);
+    printf("ram_write_pt %x\n", tmc->ram_write_pt);
+    printf("trig_counter %x\n", tmc->trig_counter);
+    printf("ctrl %x\n", tmc->ctrl);
+    // printf("ram_write_data %x\n", tmc->ram_write_data);
+    // printf("mode %x\n", tmc->mode);
+    // printf("latched_buf_fill_level %x\n", tmc->latched_buf_fill_level);
+    // printf("cur_buf_fill_level %x\n", tmc->cur_buf_fill_level);
+    // printf("buf_level_water_mark %x\n", tmc->buf_level_water_mark);
+    printf("ram_read_pt_high %x\n", tmc->ram_read_pt_high);
+    printf("ram_write_pt_high %x\n", tmc->ram_write_pt_high);
+    printf("axi_ctrl %x\n", tmc->axi_ctrl);
+    // printf("data_buf_addr_low %x\n", tmc->data_buf_addr_low);
+    // printf("data_buf_addr_high %x\n", tmc->data_buf_addr_high);
+    // printf("formatter_flush_status %x\n", tmc->formatter_flush_status);
+    explain_tmc_FFSR(tmc->formatter_flush_status);
+    printf("formatter_flush_ctrl %x\n", tmc->formatter_flush_ctrl);
+    // printf("periodic_sync_counter %x\n", tmc->periodic_sync_counter);
+    printf("**** TMC %d DONE ****\n\n", tmc_index);
+}
+
+/*
+    Calling this function in full will cause the execution to hange.
+    The board is not killed though.
+    It's very likely the TPIU is not powered. 
+    According to manul, we need to PHYSICALLY connect two jumps on board. 
+
+    If this is true, then TPIU is sliently exerting a upstream pressure to TMC2
+    that explains why TMC2 is stunned.
+*/
+void tpiu_report(TPIU_interface* tpiu) {
+    printf("TPIU report Start\n");
+    printf("support_port_size %x\n", tpiu->support_port_size);
+    // printf("cur_port_size %x\n", tpiu->cur_port_size);
+    // printf("support_trig_mode %x\n", tpiu->support_trig_mode);
+    // printf("trig_counter_val %x\n", tpiu->trig_counter_val);
+    // printf("trig_multiplier %x\n", tpiu->trig_multiplier);
+    // printf("support_test_pattern_mode %x\n", tpiu->support_test_pattern_mode);
+    // printf("cur_test_pattern_mode %x\n", tpiu->cur_test_pattern_mode);
+    // printf("tpiu_test_pattern_repeat_counter %x\n", tpiu->tpiu_test_pattern_repeat_counter);
+    // printf("formatter_flush_status %x\n", tpiu->formatter_flush_status);
+    // printf("formatter_flush_ctrl %x\n", tpiu->formatter_flush_ctrl);
+    // printf("formatter_sync_counter %x\n", tpiu->formatter_sync_counter);
+    // printf("tpiu_exctl_in_port %x\n", tpiu->tpiu_exctl_in_port);
+    // printf("tpiu_exctl_out_port %x\n", tpiu->tpiu_exctl_out_port);
+    // printf("integration_test_trig_in_flush_in_ack %x\n", tpiu->integration_test_trig_in_flush_in_ack);
+    // printf("integration_test_trig_in_flush_in %x\n", tpiu->integration_test_trig_in_flush_in);
+    // printf("integration_test_atb_data_0 %x\n", tpiu->integration_test_atb_data_0);
+    // printf("integration_test_ctrl_2 %x\n", tpiu->integration_test_ctrl_2);
+    // printf("integration_test_ctrl_1 %x\n", tpiu->integration_test_ctrl_1);
+    // printf("integration_test_ctrl_0 %x\n", tpiu->integration_test_ctrl_0);
+    // printf("integration_mode_ctrl %x\n", tpiu->integration_mode_ctrl);
+    // printf("claim_tag_set %x\n", tpiu->claim_tag_set);
+    // printf("claim_tag_clear %x\n", tpiu->claim_tag_clear);
+    printf("lock_access %x\n", tpiu->lock_access);
+    printf("lock_status %x\n", tpiu->lock_status);
 }

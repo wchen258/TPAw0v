@@ -408,7 +408,8 @@ void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time);
 void cti_config(CTI_interface * cti, uint32_t gate_mask);
 void cti_report(CTI_interface * cti);
 
-
-
+void replicator_report(Replicator_interface * repl);
+void tmc_report(TMC_interface* tmc, int tmc_index);
+void tpiu_report(TPIU_interface* tpiu);
 
 #endif

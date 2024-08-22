@@ -12,6 +12,7 @@ Funnel_interface *funnel2;
 TMC_interface *tmc1;
 TMC_interface *tmc2;
 TMC_interface *tmc3;
+TPIU_interface *tpiu;
 
 CTI_interface *r0_cti;
 CTI_interface *r1_cti;
@@ -112,13 +113,13 @@ void cs_config_SRAM() {
 	to a user defined memory buffer.
 */
 void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
-	printf("Trace data path: TMC1(HardFIFO) -> TMC2(HardFIFO) -> TMC3(ETR in Circular) -> %ld\n", buf_addr);
+	printf("Trace data path: TMC1(HardFIFO) -> TMC2(HardFIFO) -> TMC3(ETR in Circular) -> 0x%lx\n", buf_addr);
 	printf("ETR assumes the buffer size is %d bytes\n", buf_size);
 
 	etms[0] = (ETM_interface *) cs_register(A53_0_etm);
-	etms[1] = (ETM_interface *) cs_register(A53_1_etm);
-	etms[2] = (ETM_interface *) cs_register(A53_2_etm);
-	etms[3] = (ETM_interface *) cs_register(A53_3_etm);
+	// etms[1] = (ETM_interface *) cs_register(A53_1_etm);
+	// etms[2] = (ETM_interface *) cs_register(A53_2_etm);
+	// etms[3] = (ETM_interface *) cs_register(A53_3_etm);
     replicator = (Replicator_interface *) cs_register(Replic);
     funnel1 = (Funnel_interface *) cs_register(Funnel1);
     funnel2 = (Funnel_interface *) cs_register(Funnel2);
@@ -126,10 +127,17 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
     tmc2 = (TMC_interface *) cs_register(Tmc2);
     tmc3 = (TMC_interface *) cs_register(Tmc3);
 
+	// We are not using TPIU, so let Replicator discard all transactions directing to TPIU
+	replicator->lock_access = 0xc5acce55;
+	replicator->id_filter_atb_master_p_1 = 0xff;
+	munmap(replicator, sizeof(Replicator_interface));
+
 	funnel_unlock(funnel1);
 	funnel_unlock(funnel2);
 	funnel_config_port(funnel1, 0xff, 0);
 	funnel_config_port(funnel2, 0xff, 0);
+	munmap(funnel1, sizeof(Funnel_interface));
+	munmap(funnel2, sizeof(Funnel_interface));
 
 	tmc_unlock(tmc1);
 	tmc_unlock(tmc2);
@@ -162,6 +170,10 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	tmc_enable(tmc1);
 	tmc_enable(tmc2);
 	tmc_enable(tmc3);
+
+	munmap(tmc1, sizeof(TMC_interface));
+	munmap(tmc2, sizeof(TMC_interface));
+	munmap(tmc3, sizeof(TMC_interface));
 
 	return ;
 }
