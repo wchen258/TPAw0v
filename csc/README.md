@@ -31,4 +31,4 @@ Additionally, **Event Control Register 1** also allows the fire of the resource 
 
 ## Conclusion
 
-With the examples and write-up presented here, I believe you can navigate the ETM manual relatively with ease. If you feel this repo is helpful, please Star it and cite our paper! Thanks! 笔芯
+With the examples and write-up presented here, I believe you can navigate the ETM manual relatively with ease. If you feel this repo is helpful, please Star it and [cite our paper](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13)! Thanks! 笔芯
