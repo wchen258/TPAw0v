@@ -19,5 +19,16 @@ You can use the **Resource Selection Control Register** to control which input t
 
 Let's push the example further. Assuming the above mentioned entity is _R2_, we now program another entity _R3_ by writting to its resource selection control register. We let **the counter reaching zero** be the input of _R3_. Thus the net result is that _R3_ will fire after a defined number inputs received by _R2_. This can be used to express semantics such as "R3 fires when the virtual address 0x400000 is hit by program counter every ten times". 
 
-### External Output Event
+### External Input Event
 
+Performance Monitor Unit (PMU) often offers valuable statistics regarding the processes by monitoring the architectural events. When ETM presents, PMU can also signal ETM when certain architectural event occurs. Notice architectural events monitored by PMU (such as instruction retired, L2 data cache refill, etc...) are not ETM event. How to let ETM listen to the architectural events? You are right! the resource can be programmed to choose a specific architectural event to be its input, by programming the resource selection control register to External Input group. Precisely, an additional register **external input selector** also involves. Check the manual. 
+
+### ETM asserts external output
+
+When an ETM resource asserts its output, ETM can also asserts its **External Output Pins**. What hardware the ETM output pins pointing to? This is usually hard-wired by the vendor. Check the manual. But probably some Cross-Trigger Interface (CTI) for better flexibiliy. How to let ETM delivery the output? You guessed correctly! There is an 8-bit event selector field for it. Specifically, the **Event Control Register 0** provides four event selector fields, each can be programmed to listen to a resource. By doing so, when the resource fires, ETM will also assert its corresponding external output pin. 
+
+Additionally, **Event Control Register 1** also allows the fire of the resource to be reported in the trace stream in form of event packets. 
+
+## Conclusion
+
+With the examples and write-up presented here, I believe you can navigate the ETM manual relatively with ease. If you feel this repo is helpful, please Star it and cite our paper! Thanks! 笔芯
