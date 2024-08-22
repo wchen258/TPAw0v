@@ -25,7 +25,7 @@ Performance Monitor Unit (PMU) often offers valuable statistics regarding the pr
 
 ### ETM asserts external output
 
-When an ETM resource asserts its output, ETM can also asserts its **External Output Pins**. What hardware the ETM output pins pointing to? This is usually hard-wired by the vendor. Check the manual. But probably some Cross-Trigger Interface (CTI) for better flexibiliy. How to let ETM delivery the output? You guessed correctly! There is an 8-bit event selector field for it. Specifically, the **Event Control Register 0** provides four event selector fields, each can be programmed to listen to a resource. By doing so, when the resource fires, ETM will also assert its corresponding external output pin. 
+When an resource asserts its output, ETM can also asserts ETM itself's **External Output Pins**. What hardware the ETM output pins pointing to? This is usually hard-wired by the vendor. Check the manual. But probably some Cross-Trigger Interface (CTI) for better flexibiliy. How to let ETM delivery the output? You guessed correctly! There is an 8-bit event selector field for it. Specifically, the **Event Control Register 0** provides four event selector fields, each can be programmed to listen to a resource. By doing so, when the resource fires, ETM will also assert its corresponding external output pin. 
 
 Additionally, **Event Control Register 1** also allows the fire of the resource to be reported in the trace stream in form of event packets. 
 
