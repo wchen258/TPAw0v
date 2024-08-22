@@ -3,29 +3,27 @@ The purpose of this repo is two-folds.
 
 First, it contains a theoretical-minimum setup to conduct ARM CoreSight ETM trace on ZCU102/Kria board (`csc`, `deformat`, `ETM_data_parser`). Second, it contains paritial implementation presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13) (`paper_imp`).
 
-## Basic Examples
+## Hello ETM! Set up a Trace Session
 
-### Recommanded: Start with the csc directory
-The program `start_mp` in `csc`, upon executing, configures the infrastructure necessary, runs a target program `./hello_ETM`, traces the target program, and prints out the trace data upon exiting. 
+The code `csc` is to provide a starting point for researches who want to dive deep into the CoreSight trace infrastructure. The code has been refactored a number of times for simplicity. The program in `csc` assumes the execution environment is some Linux on ZCU102 or Kria boards (or boards with same CoreSight Topology). It performs setup for necessary CoreSight components, including but not limited to Embedded Trace Macrocell (ETM). 
 
-**Analyze Trace Data**
-`start_mp` should output two files `trace.dat` and `trace.out`. Then use the `deformat` to parser the formatted trace data by `./deformat 1 trace.dat`. The `1` indicates only one ETM is used during the trace session. This should output the raw trace data `trc_0.out`. Then use the `ctrace` in `ETM_data_parser` by `./ctrace trc_0.out`. It should print human readable trace data. If something goes wrong, take a look at Kernel Configuration in the later section.
+### Demo I: Send trace data to any memory-mapped address
+`start_etr` in `csc` offers an example setup that utilizes the Embedded Trace Router (ETR) in Circular Buffer Mode to rout trace data to any memory-mapped storage. Just go to `csc` directory, and `make`. Then `./start_etr`. The resultant trace data `trace.dat` can be analyzed by `deformat`, e.g. `./deformat 1 trace.dat` which produces `trc_0.out`, then by `ETM_data_parser/ctrace`, e.g. `./ctrace trc_0.out`. If something goes wrong, take a look at Kernel Configuration in the later section.
+
+In `start_etr.c`, you can specify the memory address, size, and the target application to trace. The trace data paths are Advanced Trace Bus (ATB) and AXI. Thus it expects to have higher throughput. Notice, by default, CoreSight does not guarantee real-time data emission. To achieve real-time, you need to use flush function offered by ETR. 
+
+### Demo II: Poll the trace data by software
+The program `start_mp` in `csc`, upon executing, configures the infrastructure necessary, runs a target program `./hello_ETM`, traces the target program, and prints out the trace data upon exiting. The trace data is acquired by a child process `poller` which constantly polls the RAM Read Data register on the second Trace Memory Controller (TMC2).
 
 **TL;DR**
-The purpose of `csc` is to provide a starting point for researches who want to dive deep into the CoreSight trace infrastructure. The code has been refactored a number of times for simplicity. `csc` does not entirely replicate the configuration presented in the paper. However, it has already performed one of the important aspect: set up the CoreSight infrastructure, and perform a toy example in tracing. It is intended to serve as a Hello World! for CoreSight ETM trace on ZCU102 or Kria board. The program in `csc` assumes the execution environment is some Linux on ZCU102 or Kria boards. 
 
 What does the program `start_mp` in `csc` do in details? It first configures CoreSight components, so that they are ready to accept trace data from ETM. Most importantly, it only uses one Trace Memory Controller (TMC) *TMC1* (a.k.a *ETF1*) in Software FIFO mode. This is different from paper implementation in which all three *TMCx* are used to route the trace data to some memory storage. The `poller` as a piece of software can run anywhere on the platform and it constantly polls the RAM Read Data register on TMC to fetch trace data while the target program is running. You can even add flush logic to the `poller` so that the data is fetched in a real-time manner. The `poller` can be placed on other Processing Element (PE), e.g. other spare Cortex-A53, Cortex-R5, or FPGA. Then `start_mp` enables *ETM* to generate trace while fork the target program `./hello_ETM` to be traced. Specifically, it sets a filter so that only the CPU activity for the target program within virtual address `0x400000 - 0x500000` will be traced. When the target program is finished, `start_mp` will disable the *ETM* and instruct `poller` to print out the trace data. 
 
-### Recommanded: Use TMC local buffer
-`start_sram` in `csc` demonstrates how to use TMC2 in Circular Buffer Mode to direct store trace data on the buffer managed by TMC2. This approach offers the least hackability, because the address of the trace data is not visible to the user, and it's likely that the user can only read trace data when the TMC2 is stopped. The advantage of this approaches are: 1. no additional software (e.g. `poller`) is required. 2. non-intruisive (it does not impact the system performance). 3. no extra memory storage is needed. 
+The trace data path involves ATB and Advanced Peripheral Bus (APB), thus expects to be slower.
 
-### (Unstable) Use Embedded Trace Router (ETR) to rout trace data to any memory-mapped storage
-`start_etr` in `csc` offers an example setup that utilizes the ETR in Circular Buffer Mode to rout trace data to any memory-mapped storage. However, we cannot consistently get it to work. So far, we are able to get two specific scenarios working on **some** boards. The two scenarios are
+### Demo III: Use TMC local buffer
+`start_sram` in `csc` demonstrates how to use TMC2 in Circular Buffer Mode to direct store trace data on the buffer managed by TMC2. This approach offers the least hackability, because the address of the trace data is not visible to the user, and the data has to be read via APB. The advantage of this approaches are: 1. no additional software (e.g. `poller`) is required. 2. non-intruisive (it does not impact the system performance. Although all Demos have very small impact, this is expected to be the least). 3. no extra memory storage is needed. 
 
-- Disable Formatter. One one ETM active. Some software keeps triggering the Manual Flush (original paper implementation).
-- Enable Formatter. Multiple ETM active. Using CTI to trigger flush upon some ETM defined Event happens.
-
-While on some boards, the ETR simply refuses to stream data to the downstream units. We suspect that this might be due to we are not following the manual completely. See Trace Memory Controller TRM for more details. 
 
 ## Advanced Trace Feature
 ETM can interact with other CoreSight components such as Cross Trigger Interface (CTI) and Performance Monitor Unit (PMU)
