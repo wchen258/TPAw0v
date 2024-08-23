@@ -6,7 +6,7 @@
 
     The purpose of this demo is to provide a template for researchers who want to use the CoreSight debug infrastructure.
 
-    This demo illustrates how to use ETR to route trace data to any memory mapped buffer.
+    This demo illustrates how to use ETR to route trace data to any memory mapped address.
 
     Author: Weifan Chen
     Date: 2024-08-17
@@ -84,8 +84,10 @@ int main(int argc, char *argv[])
     int status;
     waitpid(target_pid, &status, 0);
 
-    // Disable ETM, our trace session is done. Poller will print trace data.
+    // Disable ETM, our trace session is done
     etm_disable(etms[0]);
+
+    munmap(etms[0], sizeof(ETM_interface));
 
     dump_buffer(buf_addr, buf_size);
 

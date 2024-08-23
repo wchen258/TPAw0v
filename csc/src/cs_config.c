@@ -105,6 +105,8 @@ void cs_config_SRAM() {
 	tmc_enable(tmc1);
 	tmc_enable(tmc2);
 
+	munmap(tmc1, sizeof(TMC_interface));
+
 	return ;	
 }
 
@@ -128,6 +130,7 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
     tmc3 = (TMC_interface *) cs_register(Tmc3);
 
 	// We are not using TPIU, so let Replicator discard all transactions directing to TPIU
+	// on ZCU102, TPIU is not powered by default. To power, connect jumper J88 on board 
 	replicator->lock_access = 0xc5acce55;
 	replicator->id_filter_atb_master_p_1 = 0xff;
 	munmap(replicator, sizeof(Replicator_interface));
@@ -152,13 +155,11 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	tmc_set_mode(tmc3, Circular);
 
 	// enable formatter and trigger, trigger is not used though in this config
-	// whenever more than one core is being traced. The formatter is a must
+	// whenever more than one cores are being traced. The formatter is a must
 	tmc1->formatter_flush_ctrl = 0x3; 
 	tmc2->formatter_flush_ctrl = 0x3; 
 	tmc3->formatter_flush_ctrl = 0x3; 
 
-	tmc_set_axi(tmc1, 0xf);
-	tmc_set_axi(tmc2, 0xf);
 	tmc_set_axi(tmc3, 0xf);
 
 	// ETR specific configuration
@@ -180,8 +181,11 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 
 /*
 	This function assume the PMU is writtable in user space.
-	The support/enable_arm_pmu.c provides the kernel module to set PMU to be writtable in user space.
+	If something goes wrong,
+	the support/enable_arm_pmu.c provides the kernel module to set PMU to be writtable in user space.
 	Run the kernel module before running this function.
+
+	In reality, the PMU should be accessible by default because we access it as if an external debugger..
 */
 void config_pmu_enable_export() 
 {

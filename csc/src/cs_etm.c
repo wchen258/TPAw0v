@@ -447,7 +447,7 @@ void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t count
 {
     printf("Large counter counting Evnet Bus %d\n", event_bus);
     printf("Reload value: %d\n", counter_val);
-    printf("WARNING: read counter value when ETM is active might return unstable value!\n");
+    printf("IMPORTANT: read counter value when ETM is active might return unstable value!\n");
 
     int rs_num = _request_rs(etm);
 
@@ -467,7 +467,7 @@ void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t count
 void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uint32_t counter_val)
 {
     printf("Running example: Large counter counting Event Bus and fire Event\n");
-
+    printf("IMPORTANT: read counter value when ETM is active might return unstable value!\n");
     // We need three resource regs to make this work
     // one for monitoring the PMU event bus
     // two for forming the logic to use the large counter
@@ -495,8 +495,15 @@ void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uin
     etm_set_rs(etm, rs_pair_base + 1, Counter_Seq, 1, -1, 0, 0);
 
     // finally we tell ETM to insert Event Packet when the resource pair fires
+    // This also asserts ETM's own output pin for event occurance
+
+    // the position is arbitrary, choose from [0...3]
     int position_in_event_packet = 3;
+
+    // let ETM assert Event when the resource fires, this produces external output to CTI
     etm_set_event_sel(etm, position_in_event_packet, rs_pair_base, 1);
+
+    // let ETM further insert Event Packet when the resource fires
     etm_set_event_trc(etm, 0x1 << position_in_event_packet, 0);
 
 }

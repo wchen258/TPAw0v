@@ -15,15 +15,11 @@ void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time)
 }
 
 void tmc_set_mode(TMC_interface* tmc, enum tmc_mode mode) {
-    tmc->mode = 0x0;
-    tmc->mode |= mode;
+    tmc->mode = mode;
 }
 
 void tmc_set_size(TMC_interface *tmc, uint32_t ram_size)
 {
-    if(ram_size > 256*1024*1024) {
-        printf("WARNING: TMC RAM set size is greater than 256MB\n");
-    }
     tmc->ram_size = ram_size/4 ; 
 }
 
