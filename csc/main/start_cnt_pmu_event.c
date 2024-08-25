@@ -1,5 +1,5 @@
 /*
-    Brief: adapted from start_mp.c, this demo also illustrates 
+    Brief: adapted from start_etr.c, this demo also illustrates 
         how to emit Event Packet in trace stream when a user-chosen PMU event happens for a user-defined number of times.
 
     This demo should run on ZCU102/Kria board as long as the APU has linux running.
@@ -26,6 +26,7 @@
 #include "pmu_event.h"
 #include "cs_etm.h"
 #include "cs_config.h"
+#include "buffer.h"
 
 extern ETM_interface *etms[4];
 
@@ -42,8 +43,11 @@ int main(int argc, char *argv[])
     // Pin to the 4-th core, because we will use 1st core to run the target application.  
     pin_to_core(3);
 
-    // configure TMC1 to be in Software FIFO mode
-    cs_config_tmc1_softfifo();
+    uint64_t buf_addr = 0x00FFFC0000;  //OCM
+    uint32_t buf_size = 1024 * 256;
+
+    cs_config_etr_mp(buf_addr, buf_size);
+    clear_buffer(buf_addr, buf_size);
 
     // enable PMU architectural event export
     config_pmu_enable_export();
@@ -71,8 +75,8 @@ int main(int argc, char *argv[])
             //      example 2: use two counters to form a 32 bit counter
             etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 100000); 
 
-            // add a child process to poll RRD to read trace data
-            spawn_child(poller);
+            //     example 3: test, use a large counter to see how fast it can emit event packet
+            // etm_example_large_counter_rapid_fire_pos(etms[0], 0, 50000);
 
             // Enable ETM, start trace session
             etm_enable(etms[0]);
@@ -96,6 +100,7 @@ int main(int argc, char *argv[])
     // Disable ETM, our trace session is done. Poller will print trace data.
     etm_disable(etms[0]);
 
+    dump_buffer(buf_addr, buf_size);
     return 0;
 }
 

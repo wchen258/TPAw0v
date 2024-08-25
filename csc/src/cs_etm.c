@@ -17,6 +17,8 @@
     Thus when making a request, it's advised to use the _request function below
     When requesting pair, the index is taken from below
     When requesting single, the index is taken from above to resolve the conflict
+
+    resource index == 0 is always False, and == 1 is always True
 */
 int avail_addr_cmp_high[4] = {7,7,7,7} ;
 int avail_addr_cmp_low[4] = {0,0,0,0} ;
@@ -326,8 +328,6 @@ static void etm_set_rs(ETM_interface *etm, int rs_num, enum rs_group group, int 
 
 static void etm_set_event_sel_n(ETM_interface *etm, int rs_num, int pair, int n)
 {
-    if (rs_num <2)
-        printf("WARNING: Resource Selector 0,1 is used for event trace. This is not common, unless intended.\n");
     etm->event_ctrl_0 |= rs_num << (8*n);
     if (pair)
         SET(etm->event_ctrl_0, 7 + 8*n);
@@ -335,8 +335,14 @@ static void etm_set_event_sel_n(ETM_interface *etm, int rs_num, int pair, int n)
         CLEAR(etm->event_ctrl_0, 7 + 8*n);
 }
 
+/* 
+    Hook the resource indicated by [rs_num] and [pair] to the ETM event at position [sel_num]
+*/
 static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int pair)
 {
+    if(!pair && rs_num < 2) {
+        printf("WARNING: Resource Selector 0,1 are special RS, and is used. Make sure it's intended.\n");
+    }
     int true_num = rs_num;
     if (pair) {
         true_num = rs_num / 2;
@@ -355,6 +361,16 @@ void etm_set_event_trc(ETM_interface *etm, int mask, int atb)
         SET(etm->event_ctrl_1, 11);
     else
         CLEAR(etm->event_ctrl_1, 11);
+}
+
+/*
+    A special setup for testing. By using resource 1, and hook it to ETM event at [pos]
+    it can output the event packet at maximum speed
+*/
+void etm_always_fire_event_pos(ETM_interface *etm, int pos)
+{
+    etm_set_event_sel(etm, pos, 1, 0);
+    etm_set_event_trc(etm, 0x1 << pos, 0);
 }
 
 void etm_register_pmu_event(ETM_interface *etm, int event_bus)
@@ -506,6 +522,22 @@ void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uin
     // let ETM further insert Event Packet when the resource fires
     etm_set_event_trc(etm, 0x1 << position_in_event_packet, 0);
 
+}
+
+
+void etm_example_large_counter_rapid_fire_pos(ETM_interface* etm, int pos, uint32_t counter_val)
+{
+    int rs_pair = _request_rs_pair(etm);
+
+    etm_set_large_counter(etm, 0, counter_val);
+
+    etm->counter_ctrl[0] |= 1;
+
+    etm_set_rs(etm, rs_pair, Counter_Seq, 0, -1, 0, 0);
+    etm_set_rs(etm, rs_pair + 1, Counter_Seq, 1, -1, 0, 0);
+
+    etm_set_event_sel(etm, pos, rs_pair, 1);
+    etm_set_event_trc(etm, 0x1 << pos, 0);
 }
 
 void etm_register_single_addr_match_event(ETM_interface *etm, uint64_t addr) 

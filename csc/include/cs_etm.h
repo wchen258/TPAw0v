@@ -220,6 +220,7 @@ void etm_set_branch_broadcast(ETM_interface*, int, uint8_t);
 void etm_set_contextid_cmp(ETM_interface*, uint64_t);
 void etm_set_ext_input(ETM_interface*, int, int);
 void etm_set_event_trc(ETM_interface*, int mask, int atb);
+void etm_always_fire_event_post(ETM_interface* etm, int pos);
 void etm_register_pmu_event(ETM_interface *, int event_bus);
 void etm_register_range(ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
 void etm_register_single_addr_match_event(ETM_interface *, uint64_t);
@@ -229,4 +230,13 @@ void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t count
 void etm_print_large_counter(ETM_interface* etm, int cnt_base_index);
 void etm_example_single_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val);
 void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uint32_t counter_val);
+
+/*
+    Request a self-loading counter with [counter_val] as its intial/reload value
+    It will decrement at maximum speed due to the counter listens to the Resouce Selector 1 (always True resource)
+    It also emits Event Packet at position [pos] when the counter is reloading
+
+    This is most like for testing purpose
+*/
+void etm_example_large_counter_rapid_fire_pos(ETM_interface* etm, int pos, uint32_t counter_val);
 #endif
