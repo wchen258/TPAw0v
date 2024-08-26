@@ -1,8 +1,29 @@
 # TPAw0v; CoreSight ETM setup
 The purpose of this repo is two-folds.
 
-First, it contains a theoretical-minimum setup to conduct ARM CoreSight ETM trace on ZCU102/Kria board (`csc`, `deformat`, `ETM_data_parser`). Second, it contains paritial implementation presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13) (`paper_imp`).
+First, it contains a theoretical-minimum setup to **conduct ARM CoreSight ETM trace** on ZCU102/Kria board (`csc`, `deformat`, `ETM_data_parser`). Second, it contains **paritial implementation** presented in [Timely Progress Integrity: Low-overhead Online Assessment of Timely Progress as a Commodity](https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13) (`paper_imp`).
 
+If you feel the repo is helpful, please Star 🌟 and Cite our paper! 🫶
+```
+@InProceedings{chen_et_al:LIPIcs.ECRTS.2023.13,
+  author =	{Chen, Weifan and Izhbirdeev, Ivan and Hoornaert, Denis and Roozkhosh, Shahin and Carpanedo, Patrick and Sharma, Sanskriti and Mancuso, Renato},
+  title =	{{Low-Overhead Online Assessment of Timely Progress as a System Commodity}},
+  booktitle =	{35th Euromicro Conference on Real-Time Systems (ECRTS 2023)},
+  pages =	{13:1--13:26},
+  series =	{Leibniz International Proceedings in Informatics (LIPIcs)},
+  ISBN =	{978-3-95977-280-8},
+  ISSN =	{1868-8969},
+  year =	{2023},
+  volume =	{262},
+  editor =	{Papadopoulos, Alessandro V.},
+  publisher =	{Schloss Dagstuhl -- Leibniz-Zentrum f{\"u}r Informatik},
+  address =	{Dagstuhl, Germany},
+  URL =		{https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ECRTS.2023.13},
+  URN =		{urn:nbn:de:0030-drops-180428},
+  doi =		{10.4230/LIPIcs.ECRTS.2023.13},
+  annote =	{Keywords: progress-aware regulation, hardware assisted runtime monitoring, timing annotation, control flow graph}
+}
+```
 ## Hello ETM! Set up a Trace Session
 
 The code `csc` is to provide a starting point for researches who want to dive deep into the CoreSight trace infrastructure. The code has been refactored a number of times for simplicity. The program in `csc` assumes the execution environment is some Linux on ZCU102 or Kria boards (or boards with same CoreSight Topology). It performs setup for necessary CoreSight components, including but not limited to Embedded Trace Macrocell (ETM). 
