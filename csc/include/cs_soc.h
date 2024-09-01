@@ -403,6 +403,10 @@ void tmc_set_data_buf(TMC_interface *, uint64_t);
 void tmc_set_axi(TMC_interface *, int);
 void tmc_set_read_pt(TMC_interface *, uint64_t);
 void tmc_set_write_pt(TMC_interface *, uint64_t);
+
+/* disable and wait until the TMC is ready */
+void tmc_strong_disable(TMC_interface *tmc);
+
 void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time);
 
 void cti_config(CTI_interface * cti, uint32_t gate_mask);

@@ -30,6 +30,9 @@ FILE* id2file(FILE** fps, int id) {
 /* 
     frame_buf is 16 bytes long. Only the entire 16bytes are recevied, the deformatting can start meaningfully.
     the cur_id is consistent with ETM ID. 
+
+    cur_id == 0 is reserved to indicate null. This could happen when trace end or flush.
+    The data bytes associate with ID 0 are discarded.
 */
 void proc_frame(FILE** fps, uint8_t* frame_buf, int* cur_id) {
     int i;
@@ -46,11 +49,17 @@ void proc_frame(FILE** fps, uint8_t* frame_buf, int* cur_id) {
         } else if ( (frame_buf[i*2] & 0x1) && !(aux & (0x1 << i)) ) {
             // new ID and the next byte corresponding to the new ID
             *cur_id = (frame_buf[i*2] & 0xfe) >> 1;
+            if (*cur_id == 0) {
+                continue;
+            }
             if(i != 7) {
                 fwrite(&frame_buf[i*2 + 1], sizeof(uint8_t), 1, id2file(fps, *cur_id));
             }
         } else {
             // Data byte
+            if (*cur_id == 0) {
+                continue;
+            }
             char dat = (frame_buf[i*2] & 0xfe) | ((aux & (0x1 << i)) >> i);
             FILE* tar_fp = id2file(fps, *cur_id);
             fwrite(&dat, sizeof(uint8_t), 1, tar_fp); 

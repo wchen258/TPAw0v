@@ -51,6 +51,11 @@ void tmc_set_write_pt(TMC_interface *tmc, uint64_t addr)
     tmc->ram_write_pt_high = (uint32_t) (addr >> 32);
 }
 
+void tmc_strong_disable(TMC_interface *tmc) {
+    tmc->ctrl = 0x0;
+    while( !(tmc->status >> 2 & 0x1) );
+}
+
 
 void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
     cti_unlock(tar_cti);  // unlock CTI to enable write

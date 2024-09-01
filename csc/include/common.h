@@ -1,7 +1,6 @@
 #ifndef COMMON_H_
 #define COMMON_H_
 
-#include "common.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>

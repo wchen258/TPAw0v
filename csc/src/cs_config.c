@@ -174,7 +174,7 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 
 	munmap(tmc1, sizeof(TMC_interface));
 	munmap(tmc2, sizeof(TMC_interface));
-	munmap(tmc3, sizeof(TMC_interface));
+	// munmap(tmc3, sizeof(TMC_interface));
 
 	return ;
 }
