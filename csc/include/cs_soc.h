@@ -404,6 +404,11 @@ void tmc_set_axi(TMC_interface *, int);
 void tmc_set_read_pt(TMC_interface *, uint64_t);
 void tmc_set_write_pt(TMC_interface *, uint64_t);
 
+/*  Use tmc_drain_data when the trace session is done 
+    In the context of this project, the trace session is done when ETM is disabled
+*/
+void tmc_drain_data(TMC_interface *tmc);
+
 /* disable and wait until the TMC is ready */
 void tmc_strong_disable(TMC_interface *tmc);
 

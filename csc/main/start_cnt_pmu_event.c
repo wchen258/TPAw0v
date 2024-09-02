@@ -26,9 +26,10 @@
 #include "pmu_event.h"
 #include "cs_etm.h"
 #include "cs_config.h"
-#include "buffer.h"
+#include "cs_soc.h"
 
 extern ETM_interface *etms[4];
+extern TMC_interface *tmc3;
 
 int main(int argc, char *argv[])
 {
@@ -47,7 +48,6 @@ int main(int argc, char *argv[])
     uint32_t buf_size = 1024 * 256;
 
     cs_config_etr_mp(buf_addr, buf_size);
-    clear_buffer(buf_addr, buf_size);
 
     // enable PMU architectural event export
     config_pmu_enable_export();
@@ -66,14 +66,14 @@ int main(int argc, char *argv[])
 
             // further configure ETM. So that it will only trace the process with pid == child_pid/target_pid
             etm_set_contextid_cmp(etms[0], child_pid);
-            etm_register_range(etms[0], 0x401144, 0x401144, 1); // this address is supposed to be the first instruction in <main>
+            etm_register_range(etms[0], 0x400000, 0x500000, 1); // this address is supposed to be the first instruction in <main>
 
             // choose one example to run
             //      example 1: use one counter (16-bit)
             // etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
 
             //      example 2: use two counters to form a 32 bit counter
-            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 100000); 
+            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 10000000); 
 
             //     example 3: test, use a large counter to see how fast it can emit event packet
             // etm_example_large_counter_rapid_fire_pos(etms[0], 0, 50000);
@@ -100,7 +100,8 @@ int main(int argc, char *argv[])
     // Disable ETM, our trace session is done. Poller will print trace data.
     etm_disable(etms[0]);
 
-    dump_buffer(buf_addr, buf_size);
+    // drain the TMC3 (ETR) and write the trace data to files
+    tmc_drain_data(tmc3);
     return 0;
 }
 

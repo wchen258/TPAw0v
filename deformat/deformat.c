@@ -44,7 +44,9 @@ void proc_frame(FILE** fps, uint8_t* frame_buf, int* cur_id) {
                 printf("auxiliary fault!\n");
                 exit(0);
             }
-            fwrite(&frame_buf[i*2 + 1], sizeof(uint8_t), 1, id2file(fps, *cur_id));
+            if (*cur_id != 0) {
+                fwrite(&frame_buf[i*2 + 1], sizeof(uint8_t), 1, id2file(fps, *cur_id));
+            }
             *cur_id = (frame_buf[i*2] & 0xfe) >> 1; 
         } else if ( (frame_buf[i*2] & 0x1) && !(aux & (0x1 << i)) ) {
             // new ID and the next byte corresponding to the new ID
@@ -87,6 +89,14 @@ void dat2out(char* ifname, char* ofname) {
     fclose(f2);
 }
 
+/* print the 16byte frame, with 4 bytes per-line in format of 0x%08X, so total of four lines */
+void print_frame(uint8_t* frame_buf) {
+    int i;
+    for(i=0; i<4; i++) {
+        printf("0x%02X%02X%02X%02X\n", frame_buf[i*4+3], frame_buf[i*4 + 2], frame_buf[i*4 + 1], frame_buf[i*4 + 0]);
+    }
+}
+
 
 // requires two positional arguments: the number of active ETMs and the input file name
 int main(int argc, char *argv[]) {
@@ -113,11 +123,14 @@ int main(int argc, char *argv[]) {
         fps[i] = fopen(sep_fname, "wb");
     }
 
+    int frame_count = 0;
     while(1) {
         status = fread(frame_buf, sizeof(frame_buf), 1, fp);
         if (status != 1) {
             break;
         }
+        printf("Frame %d\n", frame_count++);
+        print_frame(frame_buf);
         proc_frame(fps, frame_buf, &cur_id);
     }
 

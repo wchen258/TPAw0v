@@ -19,9 +19,11 @@
 #include "pmu_event.h"
 #include "cs_etm.h"
 #include "cs_config.h"
-#include "buffer.h"
+// #include "buffer.h"
+#include "cs_soc.h"
 
 extern ETM_interface *etms[4];
+extern TMC_interface *tmc3;
 
 int main(int argc, char *argv[])
 {
@@ -46,7 +48,7 @@ int main(int argc, char *argv[])
     cs_config_etr_mp(buf_addr, buf_size);
 
     // clear the buffer
-    clear_buffer(buf_addr, buf_size);
+    // clear_buffer(buf_addr, buf_size);
 
     // initialize ETM
     config_etm_n(etms[0], 0, 1);
@@ -89,7 +91,8 @@ int main(int argc, char *argv[])
 
     munmap(etms[0], sizeof(ETM_interface));
 
-    dump_buffer(buf_addr, buf_size);
+    // drain the TMC3 (ETR) and write the trace data to files
+    tmc_drain_data(tmc3);
 
     return 0;
 }

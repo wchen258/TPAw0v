@@ -56,6 +56,38 @@ void tmc_strong_disable(TMC_interface *tmc) {
     while( !(tmc->status >> 2 & 0x1) );
 }
 
+void tmc_drain_data(TMC_interface *tmc) 
+{
+    tmc_strong_disable(tmc);
+
+    if(CHECK(tmc->status, 0)) {
+        printf("WARNING: TMC asserts Full, indicating the write-pointer wraps around. Resultant trace might lose beginnings!\n");
+    }
+
+    printf("Dumping trace to trace.{out.dat}\n");
+    FILE *fp2 = fopen("trace.out", "w");
+    FILE *fp3 = fopen("trace.dat", "w");
+    if(fp2 == NULL || fp3 == NULL) {
+        printf("file can't be opened\n");
+        exit(1);
+    }
+
+    uint32_t data = 0;
+    while(1) {
+        data = tmc->ram_read_data;
+        if (data != 0xffffffff) {
+            fprintf(fp2, "0x%08X\n", data);
+            fwrite((void *)&data, sizeof(uint32_t), 1, fp3);
+        } else {
+            break;
+        }
+    }
+
+    fclose(fp2);
+    fclose(fp3);
+    munmap(tmc, sizeof(TMC_interface));
+}
+
 
 void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
     cti_unlock(tar_cti);  // unlock CTI to enable write
