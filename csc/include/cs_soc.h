@@ -189,13 +189,14 @@ typedef struct __attribute__((__packed__)) tpiu_interface {
     PAD(0x30c, 0x400);
     uint32_t tpiu_exctl_in_port ;
     uint32_t tpiu_exctl_out_port ;  
-    PAD(0x40c, 0xee4);
+    PAD(0x408, 0xee4);
     uint32_t integration_test_trig_in_flush_in_ack ;
     uint32_t integration_test_trig_in_flush_in ;
     uint32_t integration_test_atb_data_0 ;
     uint32_t integration_test_ctrl_2 ;
     uint32_t integration_test_ctrl_1 ;
     uint32_t integration_test_ctrl_0 ;
+    PAD(0xefc, 0xf00);
     uint32_t integration_mode_ctrl ;
     PAD(0xf04, 0xfa0);
     uint32_t claim_tag_set ;

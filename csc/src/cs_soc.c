@@ -2,6 +2,7 @@
 #include "cs_soc.h"
 #include <stdio.h>
 #include <stdint.h>
+#define ADDR(b, r) ((char *) (&b->r) - (char *) b)
 
 void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time)
 {
@@ -224,27 +225,49 @@ void tmc_report(TMC_interface* tmc, int tmc_index) {
 void tpiu_report(TPIU_interface* tpiu) {
     printf("TPIU report Start\n");
     printf("support_port_size %x\n", tpiu->support_port_size);
+
+    // sus reg, cause hang upon read
     // printf("cur_port_size %x\n", tpiu->cur_port_size);
-    // printf("support_trig_mode %x\n", tpiu->support_trig_mode);
-    // printf("trig_counter_val %x\n", tpiu->trig_counter_val);
-    // printf("trig_multiplier %x\n", tpiu->trig_multiplier);
-    // printf("support_test_pattern_mode %x\n", tpiu->support_test_pattern_mode);
+
+    printf("support_trig_mode %x\n", tpiu->support_trig_mode);
+    printf("trig_counter_val %x\n", tpiu->trig_counter_val);
+    printf("trig_multiplier %x\n", tpiu->trig_multiplier);
+    printf("support_test_pattern_mode %x\n", tpiu->support_test_pattern_mode);
+
+    // sus reg, cause hang upon read
     // printf("cur_test_pattern_mode %x\n", tpiu->cur_test_pattern_mode);
     // printf("tpiu_test_pattern_repeat_counter %x\n", tpiu->tpiu_test_pattern_repeat_counter);
-    // printf("formatter_flush_status %x\n", tpiu->formatter_flush_status);
-    // printf("formatter_flush_ctrl %x\n", tpiu->formatter_flush_ctrl);
+
+    printf("formatter_flush_status %x\n", tpiu->formatter_flush_status);
+    printf("formatter_flush_ctrl %x\n", tpiu->formatter_flush_ctrl);
+
+    // sus reg, cause hang upon read
     // printf("formatter_sync_counter %x\n", tpiu->formatter_sync_counter);
-    // printf("tpiu_exctl_in_port %x\n", tpiu->tpiu_exctl_in_port);
-    // printf("tpiu_exctl_out_port %x\n", tpiu->tpiu_exctl_out_port);
-    // printf("integration_test_trig_in_flush_in_ack %x\n", tpiu->integration_test_trig_in_flush_in_ack);
-    // printf("integration_test_trig_in_flush_in %x\n", tpiu->integration_test_trig_in_flush_in);
-    // printf("integration_test_atb_data_0 %x\n", tpiu->integration_test_atb_data_0);
-    // printf("integration_test_ctrl_2 %x\n", tpiu->integration_test_ctrl_2);
-    // printf("integration_test_ctrl_1 %x\n", tpiu->integration_test_ctrl_1);
-    // printf("integration_test_ctrl_0 %x\n", tpiu->integration_test_ctrl_0);
-    // printf("integration_mode_ctrl %x\n", tpiu->integration_mode_ctrl);
-    // printf("claim_tag_set %x\n", tpiu->claim_tag_set);
-    // printf("claim_tag_clear %x\n", tpiu->claim_tag_clear);
+
+    printf("tpiu_exctl_in_port %x\n", tpiu->tpiu_exctl_in_port);
+    printf("tpiu_exctl_out_port %x\n", tpiu->tpiu_exctl_out_port);
+    printf("integration_test_trig_in_flush_in_ack %x\n", tpiu->integration_test_trig_in_flush_in_ack);
+    printf("integration_test_trig_in_flush_in %x\n", tpiu->integration_test_trig_in_flush_in);
+    printf("integration_test_atb_data_0 %x\n", tpiu->integration_test_atb_data_0);
+    printf("integration_test_ctrl_2 %x\n", tpiu->integration_test_ctrl_2);
+    printf("integration_test_ctrl_1 %x\n", tpiu->integration_test_ctrl_1);
+    printf("integration_test_ctrl_0 %x\n", tpiu->integration_test_ctrl_0);
+    printf("integration_mode_ctrl %x\n", tpiu->integration_mode_ctrl);
+    printf("claim_tag_set %x\n", tpiu->claim_tag_set);
+    printf("claim_tag_clear %x\n", tpiu->claim_tag_clear);
     printf("lock_access %x\n", tpiu->lock_access);
     printf("lock_status %x\n", tpiu->lock_status);
+    printf("auth_status %x\n", tpiu->auth_status);
+    printf("dev_config %x\n", tpiu->dev_config);
+    printf("dev_type_identifier %x\n", tpiu->dev_type_identifier);
+    printf("peri_id_4 %x\n", tpiu->peri_id_4);
+    printf("peri_id_0 %x\n", tpiu->peri_id_0);
+    printf("peri_id_1 %x\n", tpiu->peri_id_1);
+    printf("peri_id_2 %x\n", tpiu->peri_id_2);
+    printf("peri_id_3 %x\n", tpiu->peri_id_3);
+
+    printf("comp_id_0 %x\n", tpiu->comp_id_0);
+    printf("comp_id_1 %x\n", tpiu->comp_id_1);
+    printf("comp_id_2 %x\n", tpiu->comp_id_2);
+    printf("comp_id_3 %x\n", tpiu->comp_id_3);
 }
