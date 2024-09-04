@@ -52,6 +52,9 @@ int main(int argc, char *argv[])
     // enable PMU architectural event export
     config_pmu_enable_export();
 
+    // prepare the trace data buffer
+    clear_buffer(buf_addr, buf_size);
+
     // initialize ETM
     config_etm_n(etms[0], 0, 1);
 
@@ -66,14 +69,14 @@ int main(int argc, char *argv[])
 
             // further configure ETM. So that it will only trace the process with pid == child_pid/target_pid
             etm_set_contextid_cmp(etms[0], child_pid);
-            etm_register_range(etms[0], 0x400000, 0x500000, 1); // this address is supposed to be the first instruction in <main>
+            etm_register_range(etms[0], 0x400000, 0x500000, 1); // only trace the control flow in this range 
 
             // choose one example to run
             //      example 1: use one counter (16-bit)
             // etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
 
             //      example 2: use two counters to form a 32 bit counter
-            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 10000000); 
+            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 10000); 
 
             //     example 3: test, use a large counter to see how fast it can emit event packet
             // etm_example_large_counter_rapid_fire_pos(etms[0], 0, 50000);
@@ -102,6 +105,7 @@ int main(int argc, char *argv[])
 
     // drain the TMC3 (ETR) and write the trace data to files
     tmc_drain_data(tmc3);
+
     return 0;
 }
 

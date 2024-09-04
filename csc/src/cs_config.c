@@ -129,6 +129,7 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
     tmc2 = (TMC_interface *) cs_register(Tmc2);
     tmc3 = (TMC_interface *) cs_register(Tmc3);
 
+
 	// We are not using TPIU, so let Replicator discard all transactions directing to TPIU
 	// on ZCU102, TPIU is not powered by default. To power, connect jumper J88 on board 
 	replicator->lock_access = 0xc5acce55;

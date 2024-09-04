@@ -209,46 +209,6 @@ void linux_disable_cpuidle(void)
 	clock_nanosleep(CLOCK_REALTIME, 0, &ts, NULL);
 }
 
-int buff_read() {
-	uint64_t buf_addr = 0xFFFC0000;
-	// uint64_t buf_addr = 0xFFE20000;
-
-    uint32_t buf_size = 1024 * 4 * 8;  // 32 KB
-
-    int fd = open("/dev/mem", O_RDONLY);
-    if (fd == -1) {
-        perror("Error opening /dev/mem");
-        return 1;
-    }
-
-    void *mapped_base = mmap(0, buf_size, PROT_READ, MAP_SHARED, fd, buf_addr);
-    if (mapped_base == MAP_FAILED) {
-        perror("Error with mmap");
-        close(fd);
-        return 1;
-    }
-
-    sleep(1);
-    printf("Reading data from 0x%lx:\n", buf_addr);
-    uint8_t *data = (uint8_t*)mapped_base; // each time per byte
-    for (uint32_t i = 0; i < 64; i++) {
-        if (i % 16 == 0) {
-            printf("\n0x%lx: ", buf_addr + i);
-        }
-        printf("%02x ", data[i]);
-        if ((i + 1) % 8 == 0) {
-            printf(" ");
-        }
-    }
-    printf("\n");
-
-    munmap(mapped_base, buf_size);
-    close(fd);
-
-    return 0;
-}
-
-
 /*  Write the binary file [bin_name] to the target address.
     Return the first uint32_t in the binary file (the first milestone in graph) 
     --------------------
@@ -328,4 +288,35 @@ uint32_t wrmem(char* bin_name, unsigned long addr) {
     free(buffer);
 
     return first_milestone;
+}
+
+
+static uint32_t *get_buf_ptr(uint64_t buf_addr, uint32_t buf_size)
+{
+    void* ptr = NULL;
+    int fd = open("/dev/mem", O_RDWR);
+    if (fd < 0) {
+        perror("Cannot open /dev/mem\n");
+        exit(1);
+    }
+    ptr = mmap(NULL, buf_size, PROT_READ | PROT_WRITE, MAP_SHARED, fd, buf_addr);
+    if (ptr == MAP_FAILED)
+		fprintf(stderr,"mmap to buffer failed!\n");
+	close(fd);
+    return (uint32_t *) ptr;
+}
+
+/*
+    When formatter is enabled. 0xffffffff is not possible. 
+    Thus it can be used as a valid trace ending marker
+*/
+void clear_buffer(uint64_t buf_addr, uint32_t buf_size)
+{
+    printf("Populate Buffer with 0xffffffff\n");
+    uint32_t *ptr = get_buf_ptr(buf_addr, buf_size);
+    volatile uint32_t *buf = ptr;
+    for(uint32_t i=0; i<buf_size/4; i++) {
+	    *buf++ = 0xffffffff;
+    }
+    munmap(ptr, buf_size);
 }

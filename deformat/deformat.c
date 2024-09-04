@@ -8,6 +8,9 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+
+uint8_t n_mp;
+
 // requires 2 positional arguments: the number of active ETMs and the input file name
 void parse_args(int argc, char *argv[], uint8_t* n_mp) {
     if(argc != 3) {
@@ -19,6 +22,17 @@ void parse_args(int argc, char *argv[], uint8_t* n_mp) {
     return;
 }
 
+/*  By the convention in this project, the IDs of the ETM should be set from 1 to n 
+    Thus if the ID reported in the formatter is larger than that, print a warning message
+
+    There are IDs used by CoreSight for other purpose. Thus it might not indicate a trace data corruption. This deformatter is not designed to handle such cases for now.
+*/
+void check_id(uint8_t id) {
+    if (!(id <= n_mp)) {
+        printf("detect ID %u, which is larger than the number of active ETMs. Check manual whether this is a valid ID, otherwise this signals trace data corruption.\n", id);
+    } 
+}
+
 /* 
     The ID starts from 1 to 4. Thus when indexing, the position is id-1.
     The first ETM ID is 1 instead of 0, since potentially, the ID 0 might be reserved 
@@ -26,6 +40,7 @@ void parse_args(int argc, char *argv[], uint8_t* n_mp) {
 FILE* id2file(FILE** fps, int id) {
     return fps[id - 1]; 
 }
+
 
 /* 
     frame_buf is 16 bytes long. Only the entire 16bytes are recevied, the deformatting can start meaningfully.
@@ -48,9 +63,11 @@ void proc_frame(FILE** fps, uint8_t* frame_buf, int* cur_id) {
                 fwrite(&frame_buf[i*2 + 1], sizeof(uint8_t), 1, id2file(fps, *cur_id));
             }
             *cur_id = (frame_buf[i*2] & 0xfe) >> 1; 
+            check_id(*cur_id);
         } else if ( (frame_buf[i*2] & 0x1) && !(aux & (0x1 << i)) ) {
             // new ID and the next byte corresponding to the new ID
             *cur_id = (frame_buf[i*2] & 0xfe) >> 1;
+            check_id(*cur_id);
             if (*cur_id == 0) {
                 continue;
             }
@@ -106,7 +123,7 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
-    uint8_t n_mp = strtol(argv[1], NULL, 0);
+    n_mp = strtol(argv[1], NULL, 0);
     char* fname = argv[2];
 
     uint8_t frame_buf[16];
@@ -129,8 +146,8 @@ int main(int argc, char *argv[]) {
         if (status != 1) {
             break;
         }
-        printf("Frame %d\n", frame_count++);
-        print_frame(frame_buf);
+        // printf("Frame %d\n", frame_count++);
+        // print_frame(frame_buf);
         proc_frame(fps, frame_buf, &cur_id);
     }
 

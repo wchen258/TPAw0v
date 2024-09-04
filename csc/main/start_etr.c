@@ -19,7 +19,6 @@
 #include "pmu_event.h"
 #include "cs_etm.h"
 #include "cs_config.h"
-// #include "buffer.h"
 #include "cs_soc.h"
 
 extern ETM_interface *etms[4];
@@ -47,8 +46,8 @@ int main(int argc, char *argv[])
 
     cs_config_etr_mp(buf_addr, buf_size);
 
-    // clear the buffer
-    // clear_buffer(buf_addr, buf_size);
+    // prepare the trace data buffer
+    clear_buffer(buf_addr, buf_size);
 
     // initialize ETM
     config_etm_n(etms[0], 0, 1);
