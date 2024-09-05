@@ -105,6 +105,7 @@ int main(int argc, char *argv[])
 
     // drain the TMC3 (ETR) and write the trace data to files
     tmc_drain_data(tmc3);
+    // tmc_drain_data_canonical(tmc3);
 
     return 0;
 }

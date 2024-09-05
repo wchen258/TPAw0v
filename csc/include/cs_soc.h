@@ -4,9 +4,6 @@
 #include <stdint.h>
 #include "common.h"
 
-#ifdef DEBUG
-#include <stdio.h>
-#endif
 
 #define PAD( start, end ) JOIN( char pad , __COUNTER__ [end - start] )
 #define JOIN( symbol1, symbol2 ) _DO_JOIN( symbol1, symbol2 )
@@ -336,6 +333,9 @@ typedef struct __attribute__((__packed__)) tmc_interface {
     uint32_t comp_id_3;
 } TMC_interface ;
 
+/* return 1 when TMCReady pin is asserted */
+int tmc_ready(TMC_interface *tmc);
+
 static inline void funnel_unlock(Funnel_interface *funnel)
 {
     funnel->lock_access = 0xc5acce55;
@@ -361,10 +361,7 @@ static inline void tmc_enable(TMC_interface *tmc)
     tmc->ctrl = 0x1;
 }
 
-static inline int tmc_ready(TMC_interface *tmc)
-{
-    return CHECK(tmc->status, 2);
-}
+
 
 static inline void tmc_disable(TMC_interface *tmc)
 {
@@ -405,10 +402,21 @@ void tmc_set_axi(TMC_interface *, int);
 void tmc_set_read_pt(TMC_interface *, uint64_t);
 void tmc_set_write_pt(TMC_interface *, uint64_t);
 
+
+
 /*  Use tmc_drain_data when the trace session is done 
     In the context of this project, the trace session is done when ETM is disabled
 */
 void tmc_drain_data(TMC_interface *tmc);
+
+/*  The "correct" way to drain data. However, on some boards, the flush logic does not execute properly. 
+    Suspect some silicon bug. 
+    
+    The function instructs the TMC to Stop upon completing a flush reqest. Then send a manual flush. 
+    When the TMC's formatter is stopped and TMCReady is asserted. It reads RAM Read Data register to drain the data.
+    When all drained, it disables the TMC.    
+*/
+void tmc_drain_data_canonical(TMC_interface *tmc);
 
 /* disable and wait until the TMC is ready */
 void tmc_strong_disable(TMC_interface *tmc);
@@ -416,10 +424,24 @@ void tmc_strong_disable(TMC_interface *tmc);
 void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time);
 
 void cti_config(CTI_interface * cti, uint32_t gate_mask);
-void cti_report(CTI_interface * cti);
 
+
+
+// Below are functions for debug purpose
+
+void cti_report(CTI_interface * cti);
 void replicator_report(Replicator_interface * repl);
 void tmc_report(TMC_interface* tmc, int tmc_index);
+
+/*
+    On some boards, calling this function in full will cause the execution to hange.
+    The board is not killed though.
+    It's very likely the TPIU is not powered. 
+    According to manul, we need to PHYSICALLY connect two jumps on board. 
+
+    If this is true, then TPIU is sliently exerting a upstream pressure to TMC2
+    that explains why TMC2 is stunned.
+*/
 void tpiu_report(TPIU_interface* tpiu);
 
 #endif

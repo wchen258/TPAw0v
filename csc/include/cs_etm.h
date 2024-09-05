@@ -211,16 +211,43 @@ void etm_enable(ETM_interface *);
 uint8_t etm_is_idle(ETM_interface *p_etm);
 void etm_info(ETM_interface *);
 void etm_set_cci(ETM_interface* , int);
+
+/*
+    valid p val:
+    0 : disable
+    0b01000  2^8 bytes per packet
+    0b01001  2^9 bytes per packet
+    0b01010  2^10 ..
+        ...
+    0b10100  2^20 ..
+*/
 void etm_set_sync(ETM_interface*, int);
+
 void etm_implementation_info(ETM_interface*);
 void etm_unlock(ETM_interface*);
+
+/*  Bare-minimum of trace config, and clear garbage values */
 void etm_reset(ETM_interface *);
+
+/* level : 0b0 .. 0b1111 , 0b0 means no invasion */
 void etm_set_stall(ETM_interface*, int);
 void etm_set_branch_broadcast(ETM_interface*, int, uint8_t);
 void etm_set_contextid_cmp(ETM_interface*, uint64_t);
 void etm_set_ext_input(ETM_interface*, int, int);
+
+/*  Control whether the Event would also be indicated in the trace stream as Event Packet
+
+    mask: 4-bit mask, each bit corresponds to the Event registered in Event Control Register 0
+    atb: whether enable atb trigger
+*/
 void etm_set_event_trc(ETM_interface*, int mask, int atb);
+
+/*
+    A special setup for testing. By using resource 1, and hook it to ETM event at [pos]
+    it can output the event packet at maximum speed
+*/
 void etm_always_fire_event_post(ETM_interface* etm, int pos);
+
 void etm_register_pmu_event(ETM_interface *, int event_bus);
 void etm_register_range(ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
 void etm_register_single_addr_match_event(ETM_interface *, uint64_t);

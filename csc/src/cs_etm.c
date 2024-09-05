@@ -152,9 +152,6 @@ uint8_t etm_is_idle(ETM_interface *p_etm)
     return (p_etm->trace_status & 0x1);
 }
 
-/*
-Bare-minimum of trace config, and clear garbage values
-*/
 
 void etm_reset(ETM_interface *etm)
 {
@@ -227,22 +224,14 @@ void etm_set_cci(ETM_interface *etm, int cci)
     etm->cycle_count_ctrl = cci ; 
 }
 
-/*
-    valid p val:
-    0 : disable
-    0b01000  2^8 bytes per packet
-    0b01001  2^9 bytes per packet
-    0b01010  2^10 ..
-        ...
-    0b10100  2^20 ..
-*/
+
 void etm_set_sync(ETM_interface *etm, int p)
 {
     etm->sync_period = p;
 } 
 
 
-/* level : 0b0 .. 0b1111 , 0b0 means no invasion */
+
 void etm_set_stall(ETM_interface *etm, int level)
 {
     if (level) {
@@ -351,9 +340,7 @@ static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int p
     etm_set_event_sel_n(etm, true_num, pair, sel_num);
 }
 
-/*
-    atb: whether enable atb trigger
-*/
+
 void etm_set_event_trc(ETM_interface *etm, int mask, int atb)
 {
     etm->event_ctrl_1 |= mask;
@@ -363,10 +350,7 @@ void etm_set_event_trc(ETM_interface *etm, int mask, int atb)
         CLEAR(etm->event_ctrl_1, 11);
 }
 
-/*
-    A special setup for testing. By using resource 1, and hook it to ETM event at [pos]
-    it can output the event packet at maximum speed
-*/
+
 void etm_always_fire_event_pos(ETM_interface *etm, int pos)
 {
     etm_set_event_sel(etm, pos, 1, 0);

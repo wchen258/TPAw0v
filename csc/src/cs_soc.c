@@ -57,6 +57,11 @@ void tmc_strong_disable(TMC_interface *tmc) {
     while( !(tmc->status >> 2 & 0x1) );
 }
 
+int tmc_ready(TMC_interface *tmc)
+{
+    return CHECK(tmc->status, 2);
+}
+
 void tmc_drain_data(TMC_interface *tmc) 
 {
     tmc_strong_disable(tmc);
@@ -83,6 +88,44 @@ void tmc_drain_data(TMC_interface *tmc)
             break;
         }
     }
+
+    fclose(fp2);
+    fclose(fp3);
+    munmap(tmc, sizeof(TMC_interface));
+}
+
+
+void tmc_drain_data_canonical(TMC_interface *tmc) 
+{
+    tmc->formatter_flush_ctrl |= 0x1 << 12; // formatter will stop upon a flush
+    tmc->formatter_flush_ctrl |= 0x1 << 6; // reuqest a manual flush
+
+    while(!tmc_ready(tmc));
+
+    if(CHECK(tmc->status, 0)) {
+        printf("WARNING: TMC asserts Full, indicating the write-pointer wraps around. Resultant trace might lose beginnings!\n");
+    }
+
+    printf("Dumping trace to trace.{out.dat}\n");
+    FILE *fp2 = fopen("trace.out", "w");
+    FILE *fp3 = fopen("trace.dat", "w");
+    if(fp2 == NULL || fp3 == NULL) {
+        printf("file can't be opened\n");
+        exit(1);
+    }
+
+    uint32_t data = 0;
+    while(1) {
+        data = tmc->ram_read_data;
+        if (data != 0xffffffff) {
+            fprintf(fp2, "0x%08X\n", data);
+            fwrite((void *)&data, sizeof(uint32_t), 1, fp3);
+        } else {
+            break;
+        }
+    }
+
+    tmc_strong_disable(tmc);
 
     fclose(fp2);
     fclose(fp3);
@@ -130,7 +173,7 @@ void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
 
 }
 
-// Below are functions for debug purpose
+
 
 void cti_report(CTI_interface *cti) {
     printf("CTI report Start\n");
@@ -213,15 +256,7 @@ void tmc_report(TMC_interface* tmc, int tmc_index) {
     printf("**** TMC %d DONE ****\n\n", tmc_index);
 }
 
-/*
-    Calling this function in full will cause the execution to hange.
-    The board is not killed though.
-    It's very likely the TPIU is not powered. 
-    According to manul, we need to PHYSICALLY connect two jumps on board. 
 
-    If this is true, then TPIU is sliently exerting a upstream pressure to TMC2
-    that explains why TMC2 is stunned.
-*/
 void tpiu_report(TPIU_interface* tpiu) {
     printf("TPIU report Start\n");
     printf("support_port_size %x\n", tpiu->support_port_size);
