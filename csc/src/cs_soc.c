@@ -54,7 +54,8 @@ void tmc_set_write_pt(TMC_interface *tmc, uint64_t addr)
 
 void tmc_strong_disable(TMC_interface *tmc) {
     tmc->ctrl = 0x0;
-    while( !(tmc->status >> 2 & 0x1) );
+    while(!tmc_ready(tmc));
+    
 }
 
 int tmc_ready(TMC_interface *tmc)
@@ -78,10 +79,14 @@ void tmc_drain_data(TMC_interface *tmc)
         exit(1);
     }
 
+    // debug print the read/write pointer
+    printf("RAM read pointer %x\n", tmc->ram_read_pt);
+    printf("RAM write pointe %x\n", tmc->ram_write_pt);
+
     uint32_t data = 0;
     while(1) {
         data = tmc->ram_read_data;
-        if (data != 0xffffffff) {
+        if (data != 0xffffffff && tmc->ram_read_pt != tmc->ram_write_pt) {
             fprintf(fp2, "0x%08X\n", data);
             fwrite((void *)&data, sizeof(uint32_t), 1, fp3);
         } else {
@@ -94,13 +99,25 @@ void tmc_drain_data(TMC_interface *tmc)
     munmap(tmc, sizeof(TMC_interface));
 }
 
+void tmc_hardfifo_stop_sequence(TMC_interface *tmc) {
+    tmc->formatter_flush_ctrl |= 0x1 << 12; // formatter will stop upon a flush
+    tmc->formatter_flush_ctrl |= 0x1 << 6; // reuqest a manual flush
+    printf("wait for HARDFIFO to stop\n");
+    while(!tmc_ready(tmc));
+    tmc_strong_disable(tmc);
+    printf("HARDFIFO stopped and disabled\n");
+}
 
 void tmc_drain_data_canonical(TMC_interface *tmc) 
 {
     tmc->formatter_flush_ctrl |= 0x1 << 12; // formatter will stop upon a flush
     tmc->formatter_flush_ctrl |= 0x1 << 6; // reuqest a manual flush
-
     while(!tmc_ready(tmc));
+
+    // debug print the read/write pointer
+    printf("RAM read pointer %x\n", tmc->ram_read_pt);
+    printf("RAM write pointe %x\n", tmc->ram_write_pt);
+
 
     if(CHECK(tmc->status, 0)) {
         printf("WARNING: TMC asserts Full, indicating the write-pointer wraps around. Resultant trace might lose beginnings!\n");

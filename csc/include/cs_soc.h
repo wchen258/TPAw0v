@@ -421,6 +421,8 @@ void tmc_drain_data_canonical(TMC_interface *tmc);
 /* disable and wait until the TMC is ready */
 void tmc_strong_disable(TMC_interface *tmc);
 
+void tmc_hardfifo_stop_sequence(TMC_interface *tmc);
+
 void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time);
 
 void cti_config(CTI_interface * cti, uint32_t gate_mask);

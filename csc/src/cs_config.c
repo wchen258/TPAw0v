@@ -161,6 +161,9 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	tmc2->formatter_flush_ctrl = 0x3; 
 	tmc3->formatter_flush_ctrl = 0x3; 
 
+	tmc1->buf_level_water_mark = 0x0;
+	tmc2->buf_level_water_mark = 0x0;
+
 	tmc_set_axi(tmc3, 0xf);
 
 	// ETR specific configuration
@@ -173,8 +176,8 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	tmc_enable(tmc2);
 	tmc_enable(tmc3);
 
-	munmap(tmc1, sizeof(TMC_interface));
-	munmap(tmc2, sizeof(TMC_interface));
+	// munmap(tmc1, sizeof(TMC_interface));
+	// munmap(tmc2, sizeof(TMC_interface));
 	// munmap(tmc3, sizeof(TMC_interface));
 
 	return ;
