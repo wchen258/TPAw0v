@@ -213,6 +213,9 @@ void etm_info(ETM_interface *);
 void etm_set_cci(ETM_interface* , int);
 
 /*
+    The frequency of the synchronization packet emission. The synchronization packet
+    provides a starting point for the trace data analyzer.
+
     valid p val:
     0 : disable
     0b01000  2^8 bytes per packet
@@ -248,14 +251,38 @@ void etm_set_event_trc(ETM_interface*, int mask, int atb);
 */
 void etm_always_fire_event_post(ETM_interface* etm, int pos);
 
+/*  Choose a PMU event bus number for ETM to take as external input. 
+    The ETM in theory should insert one event packet to trace stream for each Event occurs in PMU
+    under the configuration of this function.
+*/
 void etm_register_pmu_event(ETM_interface *, int event_bus);
+
+/*  ETM will only trace the control flow information within the range. 
+    if [cmp_contextid], then the ETM will only trace for PID set in etm_set_contextid_cmp()
+*/
 void etm_register_range(ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
+
 void etm_register_single_addr_match_event(ETM_interface *, uint64_t);
+
+/*  ETM will start to trace control flow information when PC hits [start_addr] 
+    and cease to trace when PC hits [end_addr]
+*/
 void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr);
+
 void etm_example_single_counter(ETM_interface* etm, int event_bus, uint16_t counter_val);
 void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t counter_val);
 void etm_print_large_counter(ETM_interface* etm, int cnt_base_index);
+
+/*  Select a PMU event bus number [event_bus] and set a uint16_t counter_val 
+    ETM will fire an event packet for every [counter_val] event occurs in PMU
+*/
 void etm_example_single_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val);
+
+/*  Select a PMU event bus number [event_bus] and set a uint32_t counter_val 
+    ETM will fire an event packet for every [counter_val] event occurs in PMU
+
+    Cortex-A53 has only two counters, both of them are used to form the 32bit large counter.
+*/
 void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uint32_t counter_val);
 
 /*

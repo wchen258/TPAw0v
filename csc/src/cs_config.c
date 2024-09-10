@@ -27,10 +27,7 @@ CTI_interface *cti2 = NULL;
 
 PMU_interface *pmus[4] = {NULL, NULL, NULL, NULL};
 
-/*
-	The following config instruct the TMC1 to be used as a software FIFO
-	Other processing element (PE) can poll the TMC1 to read trace data
-*/
+
 void cs_config_tmc1_softfifo() {
 	printf("Trace data path: software directly polls TMC1 (aka ETF1).\n\n");
 
@@ -65,9 +62,7 @@ void cs_config_tmc1_softfifo() {
 	return ;	
 }
 
-/*
-	The following config instructs TMC2 to store trace data to SRAM 
-*/
+
 void cs_config_SRAM() {
 	printf("Trace data path: TMC1 -> TMC2 -> SRAM.\n\n");
 
@@ -110,10 +105,7 @@ void cs_config_SRAM() {
 	return ;	
 }
 
-/*
-	The configuration uses TMC3 (ETR) in circular buffer mode to stream the trace data
-	to a user defined memory buffer.
-*/
+
 void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	printf("Trace data path: TMC1(HardFIFO) -> TMC2(HardFIFO) -> TMC3(ETR in Circular) -> 0x%lx\n", buf_addr);
 	printf("ETR assumes the buffer size is %d bytes\n", buf_size);
@@ -183,14 +175,7 @@ void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size) {
 	return ;
 }
 
-/*
-	This function assume the PMU is writtable in user space.
-	If something goes wrong,
-	the support/enable_arm_pmu.c provides the kernel module to set PMU to be writtable in user space.
-	Run the kernel module before running this function.
 
-	In reality, the PMU should be accessible by default because we access it as if an external debugger..
-*/
 void config_pmu_enable_export() 
 {
 	printf("Configuring PMU to allow exporting architectural event to ETM\n");
@@ -210,9 +195,6 @@ void config_pmu_enable_export()
 
 }
 
-/*
-	stall = 0 for non-intrusive trace
-*/
 void config_etm_n(ETM_interface* etm_n, int stall, int id)
 {
 	etm_unlock(etm_n);

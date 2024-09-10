@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     int status;
     waitpid(target_pid, &status, 0);
 
-    // Disable ETM, our trace session is done. Poller will print trace data.
+    // Disable ETM, our trace session is done. 
     etm_disable(etms[0]);
 
     // drain the TMC3 (ETR) and write the trace data to files

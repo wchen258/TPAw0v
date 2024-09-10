@@ -1,9 +1,32 @@
 #ifndef CS_CONFIG_H
 #define CS_CONFIG_H
 
+/*
+	The following config instruct the TMC1 to be used as a software FIFO
+	Other processing element (PE) can poll the TMC1 to read trace data
+*/
 void cs_config_tmc1_softfifo();
+
+
+/*
+	The configuration uses TMC3 (ETR) in circular buffer mode to stream the trace data
+	to a user defined memory buffer.
+
+    buf_addr: physical address of the buffer
+    buf_size: size of the buffer in bytes
+
+    Known issue:
+        if the buffer is the on-chip memory (OCM) of ZCU102,
+        the buffer need to be initialized to 0xffffffff before start tracing.
+*/
 void cs_config_etr_mp(uint64_t buf_addr, uint32_t buf_size);
+
+
+/*
+	The following config instructs TMC2 to store trace data to its dedicated SRAM 
+*/
 void cs_config_SRAM();
+
 
 /*  Apply a default configuration to ETM. 
 
@@ -26,8 +49,15 @@ void cs_config_SRAM();
 */
 void config_etm_n(ETM_interface* etm_n, int stall, int id);
 
-void config_etm_addr_event_test(ETM_interface*, uint64_t, uint64_t, uint64_t, uint64_t);
-void config_etm_single_pmu_event_test(ETM_interface*, int event_bus_num);
+
+/*
+	This function assume the PMU is writtable in user space.
+	If something goes wrong,
+	the support/enable_arm_pmu.c provides the kernel module to set PMU to be writtable in user space.
+	Run the kernel module before running this function.
+
+	In reality, the PMU should be accessible by default because we access it as if an external debugger..
+*/
 void config_pmu_enable_export();
 
 #endif
