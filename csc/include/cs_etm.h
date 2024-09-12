@@ -269,16 +269,23 @@ void etm_register_single_addr_match_event(ETM_interface *, uint64_t);
 */
 void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr);
 
-void etm_example_single_counter(ETM_interface* etm, int event_bus, uint16_t counter_val);
 void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t counter_val);
+
 void etm_print_large_counter(ETM_interface* etm, int cnt_base_index);
 
-/*  Select a PMU event bus number [event_bus] and set a uint16_t counter_val 
-    ETM will fire an event packet for every [counter_val] event occurs in PMU
-*/
-void etm_example_single_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val);
+/*  
+    Select a PMU event bus number [event_bus] and set a uint16_t counter_val.
+    ETM will fire an event packet for every [counter_val] event occurs in PMU.
+    ETM will fire event at bit [event_position] in the event packet.
 
-/*  Select a PMU event bus number [event_bus] and set a uint32_t counter_val 
+    [event_position]: 0...3
+
+    If 16-bit counter is enough, this is the go-to function to use.
+*/
+void etm_example_short_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val, uint8_t event_position);
+
+/*  
+    Select a PMU event bus number [event_bus] and set a uint32_t counter_val 
     ETM will fire an event packet for every [counter_val] event occurs in PMU
 
     Cortex-A53 has only two counters, both of them are used to form the 32bit large counter.
@@ -294,3 +301,34 @@ void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uin
 */
 void etm_example_large_counter_rapid_fire_pos(ETM_interface* etm, int pos, uint32_t counter_val);
 #endif
+
+
+/*  
+    Set up a resource to listent to the external output from PMU at event bus 
+    number [event_bus]. 
+    
+    Return the resource index used 
+*/
+uint8_t etm_prepare_external_input_resource(ETM_interface* etm, int event_bus);
+
+
+/*  
+    Set up a counter with initial/reload counter value [counter_val], and 
+    let the counter listen to the output of resource at index [rs_num]
+
+    Return the counter index used
+*/
+uint8_t etm_prepare_short_counter(ETM_interface* etm, uint16_t counter_val, uint8_t rs_num);
+
+/*  
+    Set up a resource to listen to counter-at-zero-fire.
+    
+    Return: the counter index
+*/
+uint8_t etm_prepare_counter_fire_resource(ETM_interface* etm, uint8_t counter_num);
+
+
+/*  
+    Let ETM assert event and indicate in trace stream when resource at [rs_num] fires
+*/
+void etm_event_for_resource(ETM_interface* etm, uint8_t event_pos, uint8_t rs_num);

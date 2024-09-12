@@ -26,6 +26,8 @@ int avail_rs_high[4] = {15,15,15,15} ;
 int avail_rs_low[4] = {2,2,2,2} ;
 int avail_ext_sel_low[4] = {0,0,0,0};
 int avail_ext_sel_high[4] = {3,3,3,3};
+int avail_ct_low[4] = {0,0,0,0};
+uint8_t avail_ct_high[4] = {1,1,1,1};
 
 extern ETM_interface* etms[4];
 
@@ -37,6 +39,17 @@ static int get_etm_index(ETM_interface* etm)
             return i;
     }
     return -1;
+}
+
+static uint8_t _request_ct(ETM_interface* etm)
+{
+    int id = get_etm_index(etm);
+    if (avail_ct_high[id] >= avail_ct_low[id])
+        return avail_ct_low[id] ++ ;
+    else {
+        fprintf(stderr, "Error: More than 2 Counter requested!\n");
+        exit(1);
+    }
 }
 
 static int _request_addr_cmp(ETM_interface* etm)
@@ -370,54 +383,52 @@ void etm_register_pmu_event(ETM_interface *etm, int event_bus)
     // trc_mask |= 0x1 << ext_num ;
     // etm_set_event_trc(etm, trc_mask, 0);
     etm_set_event_trc(etm, 0x1 << ext_num, 0);
-
-#ifdef VERBOSE
-    printf("External Input: \n    Event Bus Number %d -> Event Packet Pos: %d\n    RS: %d  Ext Sel: %d\n", event_bus, ext_num, rs_num, ext_num);
-#endif
 }
 
-void etm_example_single_counter(ETM_interface* etm, int event_bus, uint16_t counter_val)
+uint8_t etm_prepare_external_input_resource(ETM_interface *etm, int event_bus)
 {
-    printf("Single counter counting Event Bus %d with reload %u \n", event_bus, counter_val);
     int rs_num = _request_rs(etm);
-    // when event indicated by resource [rs_num] occurs, counter 0 is decremented
-    etm->counter_ctrl[0] = rs_num;
-    // set the initial value of the cnt
-    etm->counter_val[0] = counter_val;
-
-    // request a external input selector
     int ext_num = _request_ext_sel(etm);
-    // let the resource rs_num hooked to the external input selector when PMU fires event_bus
-    etm_set_rs(etm, rs_num, External_input, ext_num, -1, 0, 0);
     etm_set_ext_input(etm, event_bus, ext_num);
-
-    // make cnt self-load
-    etm->counter_ctrl[0] |= 0x1 << 16; 
-    etm->counter_reload_val[0] = counter_val;
-
-    printf("INFO: etm_counter\n");
-    printf("rs_num: %d\n", rs_num);
-    printf("ext_num: %d\n", ext_num);
-
-    // if everything is correct, then I should see the counter decrements gradually
+    etm_set_rs(etm, rs_num, External_input, ext_num, -1, 0, 0);
+    return rs_num;
 }
 
-void etm_example_single_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val)
+uint8_t etm_prepare_short_counter(ETM_interface* etm, uint16_t counter_val, uint8_t rs_num)
+{
+    uint8_t ct_num = _request_ct(etm);
+    etm->counter_ctrl[ct_num] = rs_num;  // when rs_num fires, counter decrement
+
+    // set initial/reload value
+    etm->counter_val[ct_num] = counter_val;
+    etm->counter_ctrl[ct_num] |= 0x1 << 16;    // self-reload
+    etm->counter_reload_val[ct_num] = counter_val;    // reload value
+
+    return ct_num;
+}
+
+uint8_t etm_prepare_counter_fire_resource(ETM_interface* etm, uint8_t counter_num)
+{
+    uint8_t rs_num = _request_rs(etm);
+    etm_set_rs(etm, rs_num, Counter_Seq, counter_num, -1, 0, 0);
+    return rs_num;
+}
+
+void etm_event_for_resource(ETM_interface* etm, uint8_t event_pos, uint8_t rs_num)
+{
+    etm_set_event_sel(etm, event_pos, rs_num, 0);
+    etm_set_event_trc(etm, 0x1 << event_pos, 0);
+}
+
+void etm_example_short_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val, uint8_t event_position)
 {
     printf("Running example: Single counter counting Event Bus %d with reload %u and fire Event\n", event_bus, counter_val);
-    printf("Partially reuse example from:\n");
-    etm_example_single_counter(etm, event_bus, counter_val);
+    printf("Event position: %d\n", event_position);
 
-    // fire the event
-    int rs_num_fire = _request_rs(etm);
-    etm_set_rs(etm, rs_num_fire, Counter_Seq, 0, -1, 0, 0);
-
-    // register the fire resource to event packet
-    int position_in_event_packet = 3;
-    etm_set_event_sel(etm, position_in_event_packet, rs_num_fire, 0);
-    etm_set_event_trc(etm, 0x1 << position_in_event_packet, 0);
-
-    printf("rs_num_fire: %d\n", rs_num_fire);
+    uint8_t rs_for_ext_input = etm_prepare_external_input_resource(etm, event_bus);
+    uint8_t ct_num = etm_prepare_short_counter(etm, counter_val, rs_for_ext_input);
+    uint8_t rs_for_counter = etm_prepare_counter_fire_resource(etm, ct_num);
+    etm_event_for_resource(etm, event_position, rs_for_counter);
 
 }
 
@@ -535,9 +546,6 @@ void etm_register_single_addr_match_event(ETM_interface *etm, uint64_t addr)
     etm_set_event_sel(etm, ext_num, rs_num, 0);
     etm_set_event_trc(etm, 0x1 << ext_num, 0);
 
-#ifdef VERBOSE
-    printf("S.addr  Match: \n     Address: 0x%lx -> Event Packet Pos: %d\n    RS: %d  Ext Sel: %d\n", addr, ext_num, rs_num, ext_num);
-#endif
 }
 
 
