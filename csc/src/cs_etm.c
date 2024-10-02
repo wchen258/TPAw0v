@@ -210,6 +210,8 @@ void etm_set_contextid_cmp(ETM_interface *etm, uint64_t cid)
 
 /*
     event_bus_num is defined in header with _T in the end
+    the bus number need to be added by 4, because the first 4 are used for CTI. 
+    Arm recommands implment performance counter bus tom [n+3:4]
     selector : 0..3
 */
 void etm_set_ext_input(ETM_interface *etm, int event_bus_num, int selector)
@@ -218,7 +220,7 @@ void etm_set_ext_input(ETM_interface *etm, int event_bus_num, int selector)
         printf("WARNING: invalid position setting External Input, choose from 0..3\n");
         return ;
     }
-    etm->ext_input_sel |= event_bus_num << (8*selector);
+    etm->ext_input_sel |= (event_bus_num + 4) << (8*selector);
 }
 
 
