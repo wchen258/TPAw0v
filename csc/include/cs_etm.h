@@ -275,7 +275,7 @@ void etm_print_large_counter(ETM_interface* etm, int cnt_base_index);
 
 /*  
     Select a PMU event bus number [event_bus] and set a uint16_t counter_val.
-    ETM will fire an event packet for every [counter_val] event occurs in PMU.
+    ETM will fire an event packet for every [counter_val]+1 event occurs in PMU.
     ETM will fire event at bit [event_position] in the event packet.
 
     [event_position]: 0...3
@@ -286,7 +286,7 @@ void etm_example_short_counter_fire_event(ETM_interface* etm, int event_bus, uin
 
 /*  
     Select a PMU event bus number [event_bus] and set a uint32_t counter_val 
-    ETM will fire an event packet for every [counter_val] event occurs in PMU
+    ETM will fire an event packet for every [counter_val]+1 event occurs in PMU
 
     Cortex-A53 has only two counters, both of them are used to form the 32bit large counter.
 */
