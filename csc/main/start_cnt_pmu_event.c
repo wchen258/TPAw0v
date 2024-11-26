@@ -76,7 +76,7 @@ int main(int argc, char *argv[])
             // etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
 
             //      example 2: use two counters to form a 32 bit counter
-            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 10000); 
+            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 100); 
 
             //     example 3: test, use a large counter to see how fast it can emit event packet
             // etm_example_large_counter_rapid_fire_pos(etms[0], 0, 50000);
