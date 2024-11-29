@@ -8,6 +8,8 @@ static address_reg_t address_regs[3];
 
 static uint8_t trace_state = 0;
 
+static uint64_t global_timestamp = 0;
+
 static void init_address_regs(void) {
     uint8_t i;
     for (i = 0; i < 3; ++i) {
@@ -209,35 +211,40 @@ void handle_resync(void) {
     report("Resync");
 }
 
-void handle_traceinfo(void) {
-    uint8_t header;
-    uint8_t payload[2];
-    read_data(&header, 1, 1);
+static uint32_t handle_traceinfo_part(void) {
+    uint8_t payload, i = 0;
+    uint32_t result = 0;
 
-    switch (header)
-    {
-    case 0b00000001:
-        read_data(payload, 1, 1);
-        if (payload[0] == 0b00000000) { // TODO: figure this out
-            report("INFO session: nothing is enabled. No continue byte.");
-        } else {
-            report("UNFINISHED handle_traceinfo(0b00000001) header");
+    do {
+        read_data(&payload, 1, 1);
+        result = (((uint32_t) payload & 0x7f) << ((i++) * 7)) | result;
+    } while (payload >> 7);
+
+    return result;
+}
+
+void handle_traceinfo(void) {
+    uint8_t payload;
+    uint32_t plctl = 0, info = 0, key = 0, spec = 0, cyct = 0;
+
+    plctl = handle_traceinfo_part();
+
+    if (plctl & 0b0001)
+        info = handle_traceinfo_part();
+    if (plctl & 0b0010)
+        key = handle_traceinfo_part();
+    if (plctl & 0b0100)
+        spec = handle_traceinfo_part();
+    if (plctl & 0b1000) {
+        read_data(&payload, 1, 1);
+        cyct = payload & 0x7f;
+        if (payload >> 7) {
+            read_data(&payload, 1, 1);
+            cyct = (((uint32_t) payload & 0x1f) << 7) | cyct;
         }
-        break;
-    case 0b00001001:
-        read_data(payload, 2, 1);
-        report("Cycle Count enable");
-        report("CC: %d", payload[1]);
-        break;
-    case 0b00000000:
-        report("The trace might have ended!");
-        //end_trace();
-        pause_trace();
-        break;
-    default:
-        report("UNFINISHED handle_traceinfo header");
-        break;
     }
+
+    report("TraceInfo packet, plctl: 0x%x\ninfo: 0x%x\nkey: 0x%x\nspec: 0x%x\ncyct: 0x%x", plctl, info, key, spec, cyct);
 }
 
 void handle_context(uint8_t header) {
@@ -317,7 +324,9 @@ void handle_longaddress(uint8_t header) {
                         | (((uint64_t) payload[7]) << 56);
         break;
     default:
+        is = 0;
         report("UNDEFINED handle_longaddress header");
+        end_trace();
         break;
     }
 
@@ -356,7 +365,9 @@ void handle_shortaddress(uint8_t header) {
         }
         break;
     default:
+        is = 0;
         report("UNDEFINED handle_shortaddress header");
+        end_trace();
         break;
     }
 
@@ -398,6 +409,7 @@ void handle_addrwithcontext(uint8_t header) {
 
 void handle_timestamp(uint8_t header) {
     uint8_t i = 0, payload;
+    uint32_t timestamp_bits_changed = 0;
     uint64_t timestamp = 0;
     uint32_t count = 0;
 
@@ -407,12 +419,17 @@ void handle_timestamp(uint8_t header) {
         read_data(&payload, 1, 1);
         if (i != 8) {
             timestamp = timestamp | (((uint64_t) payload & 0x7f) << (7 * i));
+            timestamp_bits_changed += 7;
         } else {
             timestamp = timestamp | (((uint64_t) payload) << (7 * i));
+            timestamp_bits_changed += 8;
         }
     } while(((payload >> 7) == 1) && (++i < 9));
 
-    report("timestamp: %d", timestamp);
+    global_timestamp = (global_timestamp & (~((uint64_t) 0xffffffffffffffff >> (64 - timestamp_bits_changed)))) | timestamp;
+
+    report("timestamp_alt: %lld, global_timestamp: %lld", timestamp, global_timestamp);
+    report("__GS_:%lld", global_timestamp);
 
     if ((header & 0x1) == 1) {
         i = 0;
@@ -532,7 +549,11 @@ void handle_atom6(uint8_t header) {
 
 void handle_event(uint8_t header) {
     uint8_t field = header & 0xf;
-    report("Events: %d%d%d%d", (field >> 3) & 0x1, (field >> 2) & 0x1, (field >> 1) & 0x1, field & 0x1);
+    report("Events: %d%d%d%d (at %lld)", (field >> 3) & 0x1, (field >> 2) & 0x1, (field >> 1) & 0x1, field & 0x1, global_timestamp);
+    if ((field >> 3) & 0x1) report("__E3_:%lld", global_timestamp);
+    if ((field >> 2) & 0x1) report("__E2_:%lld", global_timestamp);
+    if ((field >> 1) & 0x1) report("__E1_:%lld", global_timestamp);
+    if ((field >> 0) & 0x1) report("__E0_:%lld", global_timestamp);
 }
 
 void handle_exception(void) {
