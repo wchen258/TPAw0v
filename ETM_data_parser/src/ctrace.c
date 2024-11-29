@@ -39,12 +39,12 @@ uint8_t data_available() {
 }
 
 int main(int argc, char const *argv[]) {
-    int ctl_flow_fd;
-    struct stat ctl_flow_stat;
+    //int ctl_flow_fd;
+    //struct stat ctl_flow_stat;
+    //void * ctl_ptr;
     FILE * trace_file;
-    char * line;
+    char * line = NULL;
     unsigned int line_hex;
-    void * ctl_ptr;
     size_t len = 0;
     ssize_t read;
 
