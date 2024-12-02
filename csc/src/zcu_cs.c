@@ -11,9 +11,9 @@
 #include <fcntl.h>
 
 
-void* cs_register(enum component comp)
+volatile void* cs_register(enum component comp)
 {
-	void* ptr = NULL;
+	volatile void* ptr = NULL;
     int fd = open("/dev/mem", O_RDWR | O_SYNC);
     if (fd < 0) {
         perror("Cannot open /dev/mem\n");
@@ -59,58 +59,58 @@ void* cs_register(enum component comp)
             break;
         case A53_0_etm:
             ptr = mmap(NULL, sizeof(ETM_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_0_ETM);
-            break; 
+            break;
         case A53_0_pmu:
             ptr = mmap(NULL, sizeof(PMU_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_0_PMU);
-            break; 
+            break;
         case A53_0_cti:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_0_CTI);
-            break; 
+            break;
         case A53_0_debug:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_0_DEBUG);
-            break; 
+            break;
         case A53_1_etm:
             ptr = mmap(NULL, sizeof(ETM_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_1_ETM);
-            break; 
+            break;
         case A53_1_pmu:
             ptr = mmap(NULL, sizeof(PMU_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_1_PMU);
-            break; 
+            break;
         case A53_1_cti:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_1_CTI);
-            break; 
+            break;
         case A53_1_debug:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_1_DEBUG);
-            break; 
+            break;
         case A53_2_etm:
             ptr = mmap(NULL, sizeof(ETM_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_2_ETM);
-            break; 
+            break;
         case A53_2_pmu:
             ptr = mmap(NULL, sizeof(PMU_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_2_PMU);
-            break; 
+            break;
         case A53_2_cti:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_2_CTI);
-            break; 
+            break;
         case A53_2_debug:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_2_DEBUG);
-            break; 
+            break;
         case A53_3_etm:
             ptr = mmap(NULL, sizeof(ETM_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_3_ETM);
-            break; 
+            break;
         case A53_3_pmu:
             ptr = mmap(NULL, sizeof(PMU_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_3_PMU);
-            break; 
+            break;
         case A53_3_cti:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_3_CTI);
-            break; 
+            break;
         case A53_3_debug:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + A53_3_DEBUG);
-            break; 
+            break;
         case R5_0_cti:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + R5_0_CTI);
-            break; 
+            break;
         case R5_1_cti:
             ptr = mmap(NULL, sizeof(CTI_interface), PROT_READ | PROT_WRITE, MAP_SHARED, fd, CS_BASE + R5_1_CTI);
-            break; 
+            break;
         default:
             fprintf(stderr, "Unimplemented component %d\n", comp);
             exit(1);
@@ -125,4 +125,4 @@ void* cs_register(enum component comp)
 #endif
 
     return ptr;
-} 
+}

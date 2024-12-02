@@ -9,7 +9,7 @@
 #define TRCLSR			0xfb4
 #define TRCOSLAR		0x300
 #define TRCOSLSR		0x304
-#define TRCCONFIGR		0x010 
+#define TRCCONFIGR		0x010
 #define TRCEVENTCTL0R 	0x020
 #define TRCEVENTCTL1R 	0x024
 #define TRCSTALLCTLR 	0x02c
@@ -20,7 +20,7 @@
 #define TRCVIIECTLR 	0x084
 #define TRCVISSCTLR		0x088
 #define TRCCCCTLR       0x038
-#define TRCEXTINSELR    0x120  
+#define TRCEXTINSELR    0x120
 #define TRCRSCTLR0      0x200
 #define TRCRSCTLR1      0x204
 #define TRCRSCTLR2      0x208
@@ -36,7 +36,7 @@
 #define TRCRSCTLR12     0x230
 #define TRCRSCTLR13     0x234
 #define TRCRSCTLR14     0x238
-#define TRCRSCTLR15     0x23c                 
+#define TRCRSCTLR15     0x23c
 
 // Address Comparator Value Register
 #define TRCACVR0  0x400
@@ -131,7 +131,7 @@ typedef struct __attribute__((__packed__)) etm_interface {
     uint32_t id_12;
     uint32_t id_13;
     PAD(0x198, 0x1c0);
-    uint32_t implementation_defined_r [8] ;     
+    uint32_t implementation_defined_r [8] ;
     uint32_t id_0;
     uint32_t id_1;
     uint32_t id_2;
@@ -154,7 +154,7 @@ typedef struct __attribute__((__packed__)) etm_interface {
     uint32_t res_blk7 [32];
     uint64_t addr_cmp_val [16];
     uint64_t addr_cmp_access_type [16];
-    
+
     /*
     Data Trace Block.
     Ignore them since Cortex-A53 does not support Data Trace
@@ -200,17 +200,17 @@ typedef struct __attribute__((__packed__)) etm_interface {
 
 } ETM_interface ;
 
-static inline void etm_set_cid(ETM_interface *etm)
+static inline void etm_set_cid(volatile ETM_interface *etm)
 {
     etm->trace_config |= 0x1 << 6 ;
 }
 
-ETM_interface* etm_register(int);
-void etm_disable(ETM_interface *);
-void etm_enable(ETM_interface *);
-uint8_t etm_is_idle(ETM_interface *p_etm);
-void etm_info(ETM_interface *);
-void etm_set_cci(ETM_interface* , int);
+volatile ETM_interface* etm_register(int);
+void etm_disable(volatile ETM_interface *);
+void etm_enable(volatile ETM_interface *);
+uint8_t etm_is_idle(volatile ETM_interface *p_etm);
+void etm_info(volatile ETM_interface *);
+void etm_set_cci(volatile ETM_interface* , int);
 
 /*
     The frequency of the synchronization packet emission. The synchronization packet
@@ -224,56 +224,56 @@ void etm_set_cci(ETM_interface* , int);
         ...
     0b10100  2^20 ..
 */
-void etm_set_sync(ETM_interface*, int);
+void etm_set_sync(volatile ETM_interface*, int);
 
-void etm_implementation_info(ETM_interface*);
-void etm_unlock(ETM_interface*);
+void etm_implementation_info(volatile ETM_interface*);
+void etm_unlock(volatile ETM_interface*);
 
 /*  Bare-minimum of trace config, and clear garbage values */
-void etm_reset(ETM_interface *);
+void etm_reset(volatile ETM_interface *);
 
 /* level : 0b0 .. 0b1111 , 0b0 means no invasion */
-void etm_set_stall(ETM_interface*, int);
-void etm_set_branch_broadcast(ETM_interface*, int, uint8_t);
-void etm_set_contextid_cmp(ETM_interface*, uint64_t);
-void etm_set_ext_input(ETM_interface*, int, int);
+void etm_set_stall(volatile ETM_interface*, int);
+void etm_set_branch_broadcast(volatile ETM_interface*, int, uint8_t);
+void etm_set_contextid_cmp(volatile ETM_interface*, uint64_t);
+void etm_set_ext_input(volatile ETM_interface*, int, int);
 
 /*  Control whether the Event would also be indicated in the trace stream as Event Packet
 
     mask: 4-bit mask, each bit corresponds to the Event registered in Event Control Register 0
     atb: whether enable atb trigger
 */
-void etm_set_event_trc(ETM_interface*, int mask, int atb);
+void etm_set_event_trc(volatile ETM_interface*, int mask, int atb);
 
 /*
     A special setup for testing. By using resource 1, and hook it to ETM event at [pos]
     it can output the event packet at maximum speed
 */
-void etm_always_fire_event_post(ETM_interface* etm, int pos);
+void etm_always_fire_event_post(volatile ETM_interface* etm, int pos);
 
-/*  Choose a PMU event bus number for ETM to take as external input. 
+/*  Choose a PMU event bus number for ETM to take as external input.
     The ETM in theory should insert one event packet to trace stream for each Event occurs in PMU
     under the configuration of this function.
 */
-void etm_register_pmu_event(ETM_interface *, int event_bus);
+void etm_register_pmu_event(volatile ETM_interface *, int event_bus);
 
-/*  ETM will only trace the control flow information within the range. 
+/*  ETM will only trace the control flow information within the range.
     if [cmp_contextid], then the ETM will only trace for PID set in etm_set_contextid_cmp()
 */
-void etm_register_range(ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
+void etm_register_range(volatile ETM_interface*, uint64_t start_addr, uint64_t end_addr, int cmp_contextid);
 
-void etm_register_single_addr_match_event(ETM_interface *, uint64_t);
+void etm_register_single_addr_match_event(volatile ETM_interface *, uint64_t);
 
-/*  ETM will start to trace control flow information when PC hits [start_addr] 
+/*  ETM will start to trace control flow information when PC hits [start_addr]
     and cease to trace when PC hits [end_addr]
 */
-void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr);
+void etm_register_start_stop_addr(volatile ETM_interface *etm, uint64_t start_addr, uint64_t end_addr);
 
-void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t counter_val);
+void etm_example_large_counter(volatile ETM_interface* etm, int event_bus, uint32_t counter_val);
 
-void etm_print_large_counter(ETM_interface* etm, int cnt_base_index);
+void etm_print_large_counter(volatile ETM_interface* etm, int cnt_base_index);
 
-/*  
+/*
     Select a PMU event bus number [event_bus] and set a uint16_t counter_val.
     ETM will fire an event packet for every [counter_val]+1 event occurs in PMU.
     ETM will fire event at bit [event_position] in the event packet.
@@ -282,15 +282,15 @@ void etm_print_large_counter(ETM_interface* etm, int cnt_base_index);
 
     If 16-bit counter is enough, this is the go-to function to use.
 */
-void etm_example_short_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val, uint8_t event_position);
+void etm_example_short_counter_fire_event(volatile ETM_interface* etm, int event_bus, uint16_t counter_val, uint8_t event_position);
 
-/*  
-    Select a PMU event bus number [event_bus] and set a uint32_t counter_val 
+/*
+    Select a PMU event bus number [event_bus] and set a uint32_t counter_val
     ETM will fire an event packet for every [counter_val]+1 event occurs in PMU
 
     Cortex-A53 has only two counters, both of them are used to form the 32bit large counter.
 */
-void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uint32_t counter_val);
+void etm_example_large_counter_fire_event(volatile ETM_interface* etm, int event_bus, uint32_t counter_val);
 
 /*
     Request a self-loading counter with [counter_val] as its intial/reload value
@@ -299,36 +299,36 @@ void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uin
 
     This is most like for testing purpose
 */
-void etm_example_large_counter_rapid_fire_pos(ETM_interface* etm, int pos, uint32_t counter_val);
+void etm_example_large_counter_rapid_fire_pos(volatile ETM_interface* etm, int pos, uint32_t counter_val);
 #endif
 
 
-/*  
-    Set up a resource to listent to the external output from PMU at event bus 
-    number [event_bus]. 
-    
-    Return the resource index used 
+/*
+    Set up a resource to listent to the external output from PMU at event bus
+    number [event_bus].
+
+    Return the resource index used
 */
-uint8_t etm_prepare_external_input_resource(ETM_interface* etm, int event_bus);
+uint8_t etm_prepare_external_input_resource(volatile ETM_interface* etm, int event_bus);
 
 
-/*  
-    Set up a counter with initial/reload counter value [counter_val], and 
+/*
+    Set up a counter with initial/reload counter value [counter_val], and
     let the counter listen to the output of resource at index [rs_num]
 
     Return the counter index used
 */
-uint8_t etm_prepare_short_counter(ETM_interface* etm, uint16_t counter_val, uint8_t rs_num);
+uint8_t etm_prepare_short_counter(volatile ETM_interface* etm, uint16_t counter_val, uint8_t rs_num);
 
-/*  
+/*
     Set up a resource to listen to counter-at-zero-fire.
-    
+
     Return: the counter index
 */
-uint8_t etm_prepare_counter_fire_resource(ETM_interface* etm, uint8_t counter_num);
+uint8_t etm_prepare_counter_fire_resource(volatile ETM_interface* etm, uint8_t counter_num);
 
 
-/*  
+/*
     Let ETM assert event and indicate in trace stream when resource at [rs_num] fires
 */
-void etm_event_for_resource(ETM_interface* etm, uint8_t event_pos, uint8_t rs_num);
+void etm_event_for_resource(volatile ETM_interface* etm, uint8_t event_pos, uint8_t rs_num);

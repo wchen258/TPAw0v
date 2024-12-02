@@ -2,7 +2,7 @@
     Brief: This is a simple demo to show how to use ETM to trace a target application.
 
     This demo should run on ZCU102/Kria board as long as the APU has linux running.
-    Contrary to the original paper, this demo does not need RPU. 
+    Contrary to the original paper, this demo does not need RPU.
 
     The purpose of this demo is to provide a template for researchers who want to use the CoreSight debug infrastructure.
 
@@ -21,20 +21,20 @@
 #include "cs_config.h"
 #include "cs_soc.h"
 
-extern ETM_interface *etms[4];
-extern TMC_interface *tmc3;
+extern volatile ETM_interface *etms[4];
+extern volatile TMC_interface *tmc3;
 
 int main(int argc, char *argv[])
 {
     printf("Vanilla ZCU102 self-host trace demo.\n");
     printf("Build: on %s at %s\n\n", __DATE__, __TIME__);
 
-    pid_t target_pid; 
+    pid_t target_pid;
 
     // Disabling all cpuidle. Access the ETM of an idled core will cause a hang.
     linux_disable_cpuidle();
-    
-    // Pin to the 4-th core, because we will use 1st core to run the target application.  
+
+    // Pin to the 4-th core, because we will use 1st core to run the target application.
     pin_to_core(3);
 
     // configure CoreSight to use ETR; The addr and size is the On-Chip memory (OCM) on chip.
@@ -88,11 +88,10 @@ int main(int argc, char *argv[])
     // Disable ETM, our trace session is done
     etm_disable(etms[0]);
 
-    munmap(etms[0], sizeof(ETM_interface));
+    munmap((void *)etms[0], sizeof(ETM_interface));
 
     // drain the TMC3 (ETR) and write the trace data to files
     tmc_drain_data(tmc3);
 
     return 0;
 }
-

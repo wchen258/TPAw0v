@@ -54,7 +54,7 @@
 
 
 // #define CHECK(r,p) ( (r & 0x1 << (p) ) >> (p) )
-// #define SET(r,p) ( r |= 0x1 << (p) ) 
+// #define SET(r,p) ( r |= 0x1 << (p) )
 // #define CLEAR(r,p) ( r &= ~(0x1 << (p) ) )
 
 enum component {
@@ -99,6 +99,6 @@ enum component {
     A53_3_etm,
     };
 
-void* cs_register(enum component);
+volatile void* cs_register(enum component);
 
 #endif

@@ -29,9 +29,9 @@ int avail_ext_sel_high[4] = {3,3,3,3};
 int avail_ct_low[4] = {0,0,0,0};
 uint8_t avail_ct_high[4] = {1,1,1,1};
 
-extern ETM_interface* etms[4];
+extern volatile ETM_interface* etms[4];
 
-static int get_etm_index(ETM_interface* etm)
+static int get_etm_index(volatile ETM_interface* etm)
 {
     int i;
     for(i=0; i<4; i++) {
@@ -41,7 +41,7 @@ static int get_etm_index(ETM_interface* etm)
     return -1;
 }
 
-static uint8_t _request_ct(ETM_interface* etm)
+static uint8_t _request_ct(volatile ETM_interface* etm)
 {
     int id = get_etm_index(etm);
     if (avail_ct_high[id] >= avail_ct_low[id])
@@ -52,7 +52,7 @@ static uint8_t _request_ct(ETM_interface* etm)
     }
 }
 
-static int _request_addr_cmp(ETM_interface* etm)
+static int _request_addr_cmp(volatile ETM_interface* etm)
 {
     int id = get_etm_index(etm);
     if (avail_addr_cmp_high[id] >= avail_addr_cmp_low[id])
@@ -67,7 +67,7 @@ static int _request_addr_cmp(ETM_interface* etm)
     Check if there is enough address comparator available
     if so, return the index of the first address comparator
 */
-static int _request_addr_cmp_pair(ETM_interface* etm)
+static int _request_addr_cmp_pair(volatile ETM_interface* etm)
 {
     int id = get_etm_index(etm);
     if ((avail_addr_cmp_low[id] + 1) <= avail_addr_cmp_high[id]) {
@@ -80,7 +80,7 @@ static int _request_addr_cmp_pair(ETM_interface* etm)
     }
 }
 
-static int _request_rs(ETM_interface* etm)
+static int _request_rs(volatile ETM_interface* etm)
 {
     int id = get_etm_index(etm);
     if (avail_rs_high[id] >= avail_rs_low[id])
@@ -91,7 +91,7 @@ static int _request_rs(ETM_interface* etm)
     }
 }
 
-static int _request_rs_pair(ETM_interface* etm) 
+static int _request_rs_pair(volatile ETM_interface* etm)
 {
     int id = get_etm_index(etm);
     if ((avail_rs_low[id] + 1) <= avail_rs_high[id]) {
@@ -105,7 +105,7 @@ static int _request_rs_pair(ETM_interface* etm)
 }
 
 /* return next available External Input Selector index */
-static int _request_ext_sel(ETM_interface* etm)
+static int _request_ext_sel(volatile ETM_interface* etm)
 {
     int id = get_etm_index(etm);
     if (avail_ext_sel_high[id] >= avail_ext_sel_low[id])
@@ -116,7 +116,7 @@ static int _request_ext_sel(ETM_interface* etm)
     }
 }
 
-void etm_implementation_info(ETM_interface *etm)
+void etm_implementation_info(volatile ETM_interface *etm)
 {
     printf("ETM implementation info:\n");
     printf("CCI minimum: %d\n", etm->id_3 & 0xfff);
@@ -135,38 +135,38 @@ void etm_implementation_info(ETM_interface *etm)
 #endif
 }
 
-void etm_info(ETM_interface *etm)
+void etm_info(volatile ETM_interface *etm)
 {
     printf("Program  Ctrl: 0x%x\n", etm->prog_ctrl);
     printf("Trace  status: 0x%x\n", etm->trace_status);
     printf("OSLock status: 0x%x\n", etm->os_lock_status);
 }
 
-void etm_unlock(ETM_interface *etm)
+void etm_unlock(volatile ETM_interface *etm)
 {
     etm->software_lock_access = 0xc5acce55;
     etm->os_lock_access = 0x0;
 }
 
-void etm_disable(ETM_interface *p_etm)
+void etm_disable(volatile ETM_interface *p_etm)
 {
     p_etm->prog_ctrl = 0x0;
     while( !(p_etm->trace_status & 0x1) );
 }
 
-void etm_enable(ETM_interface *p_etm)
+void etm_enable(volatile ETM_interface *p_etm)
 {
     p_etm->prog_ctrl = 0x1;
     while( (p_etm->trace_status) & 0x1 );
 }
 
-uint8_t etm_is_idle(ETM_interface *p_etm)
+uint8_t etm_is_idle(volatile ETM_interface *p_etm)
 {
     return (p_etm->trace_status & 0x1);
 }
 
 
-void etm_reset(ETM_interface *etm)
+void etm_reset(volatile ETM_interface *etm)
 {
     etm->trace_config = 0;
     etm->event_ctrl_0 = 0;
@@ -182,8 +182,8 @@ void etm_reset(ETM_interface *etm)
 
     int i;
     for(i=2; i<32; i++)
-        etm->resource_sel_ctrl[i] = 0;  
-    
+        etm->resource_sel_ctrl[i] = 0;
+
     for(i=0; i<16; i++) {
         etm->addr_cmp_val[i] = 0;
         etm->addr_cmp_access_type[i] = 0;
@@ -202,7 +202,7 @@ void etm_reset(ETM_interface *etm)
 
 }
 
-void etm_set_contextid_cmp(ETM_interface *etm, uint64_t cid)
+void etm_set_contextid_cmp(volatile ETM_interface *etm, uint64_t cid)
 {
     etm->contextid_cmp_val[0] = cid;
     etm->contextid_cmp_ctrl_0 = 0;
@@ -210,11 +210,11 @@ void etm_set_contextid_cmp(ETM_interface *etm, uint64_t cid)
 
 /*
     event_bus_num is defined in header with _T in the end
-    the bus number need to be added by 4, because the first 4 are used for CTI. 
+    the bus number need to be added by 4, because the first 4 are used for CTI.
     Arm recommands implment performance counter bus tom [n+3:4]
     selector : 0..3
 */
-void etm_set_ext_input(ETM_interface *etm, int event_bus_num, int selector)
+void etm_set_ext_input(volatile ETM_interface *etm, int event_bus_num, int selector)
 {
     if (selector > 3 || selector < 0) {
         printf("WARNING: invalid position setting External Input, choose from 0..3\n");
@@ -227,7 +227,7 @@ void etm_set_ext_input(ETM_interface *etm, int event_bus_num, int selector)
 /*
     int cci: [4, 2^12 = 4096]
 */
-void etm_set_cci(ETM_interface *etm, int cci)
+void etm_set_cci(volatile ETM_interface *etm, int cci)
 {
     int ccimin = etm->id_3 & 0xfff;
     if (cci < ccimin) {
@@ -236,18 +236,18 @@ void etm_set_cci(ETM_interface *etm, int cci)
         return ;
     }
     etm->trace_config |= 0x1 << 4 ;
-    etm->cycle_count_ctrl = cci ; 
+    etm->cycle_count_ctrl = cci ;
 }
 
 
-void etm_set_sync(ETM_interface *etm, int p)
+void etm_set_sync(volatile ETM_interface *etm, int p)
 {
     etm->sync_period = p;
-} 
+}
 
 
 
-void etm_set_stall(ETM_interface *etm, int level)
+void etm_set_stall(volatile ETM_interface *etm, int level)
 {
     if (level) {
         etm->stall_ctrl |= 0x1 << 8;
@@ -260,7 +260,7 @@ void etm_set_stall(ETM_interface *etm, int level)
     }
 }
 
-void etm_set_branch_broadcast(ETM_interface *etm, int inv, uint8_t mask)
+void etm_set_branch_broadcast(volatile ETM_interface *etm, int inv, uint8_t mask)
 {
     SET(etm->trace_config, 3);
     if (inv)
@@ -270,17 +270,17 @@ void etm_set_branch_broadcast(ETM_interface *etm, int inv, uint8_t mask)
     etm->branch_broadcast_ctrl |= mask;
 }
 
-static void etm_set_addr_cmp(ETM_interface *etm, int num, uint64_t addr, int cmp_contextid)
+static void etm_set_addr_cmp(volatile ETM_interface *etm, int num, uint64_t addr, int cmp_contextid)
 {
     etm->addr_cmp_val[num] = addr ;
-    if (cmp_contextid) 
+    if (cmp_contextid)
         SET(etm->addr_cmp_access_type[num], 2);
-    else 
+    else
         CLEAR(etm->addr_cmp_access_type[num], 2);
     CLEAR(etm->addr_cmp_access_type[num], 3);
 }
 
-void etm_register_range(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr, int cmp_contextid)
+void etm_register_range(volatile ETM_interface *etm, uint64_t start_addr, uint64_t end_addr, int cmp_contextid)
 {
     int addr_cmp_index_base = _request_addr_cmp_pair(etm);
     etm_set_addr_cmp(etm, addr_cmp_index_base, start_addr, cmp_contextid);
@@ -288,7 +288,7 @@ void etm_register_range(ETM_interface *etm, uint64_t start_addr, uint64_t end_ad
     SET(etm->vi_ie_ctrl, addr_cmp_index_base / 2);
 }
 
-void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint64_t end_addr)
+void etm_register_start_stop_addr(volatile ETM_interface *etm, uint64_t start_addr, uint64_t end_addr)
 {
     int cmp_0 = _request_addr_cmp(etm);
     int cmp_1 = _request_addr_cmp(etm);
@@ -310,7 +310,7 @@ void etm_register_start_stop_addr(ETM_interface *etm, uint64_t start_addr, uint6
     inv      : Whether inverse the results
     pair_inv : Whether inverse the combined result from pair resources
 */
-static void etm_set_rs(ETM_interface *etm, int rs_num, enum rs_group group, int r1, int r2, int inv, int pair_inv)
+static void etm_set_rs(volatile ETM_interface *etm, int rs_num, enum rs_group group, int r1, int r2, int inv, int pair_inv)
 {
     if (rs_num < 2) {
         printf("WARNING: Resource Selector 0,1 are special RS. Should not be used. RS not set.\n");
@@ -321,7 +321,7 @@ static void etm_set_rs(ETM_interface *etm, int rs_num, enum rs_group group, int 
         if (r2 >= 0) {
             SET(etm->resource_sel_ctrl[rs_num], r2 + 4);
         }
-    } else 
+    } else
         SET(etm->resource_sel_ctrl[rs_num], r1);
     etm->resource_sel_ctrl[rs_num] |= group << 16 ;
     if (inv)
@@ -330,7 +330,7 @@ static void etm_set_rs(ETM_interface *etm, int rs_num, enum rs_group group, int 
         SET(etm->resource_sel_ctrl[rs_num], 21);
 }
 
-static void etm_set_event_sel_n(ETM_interface *etm, int rs_num, int pair, int n)
+static void etm_set_event_sel_n(volatile ETM_interface *etm, int rs_num, int pair, int n)
 {
     etm->event_ctrl_0 |= rs_num << (8*n);
     if (pair)
@@ -339,10 +339,10 @@ static void etm_set_event_sel_n(ETM_interface *etm, int rs_num, int pair, int n)
         CLEAR(etm->event_ctrl_0, 7 + 8*n);
 }
 
-/* 
+/*
     Hook the resource indicated by [rs_num] and [pair] to the ETM event at position [sel_num]
 */
-static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int pair)
+static void etm_set_event_sel(volatile ETM_interface *etm, int sel_num, int rs_num, int pair)
 {
     if(!pair && rs_num < 2) {
         printf("WARNING: Resource Selector 0,1 are special RS, and is used. Make sure it's intended.\n");
@@ -356,7 +356,7 @@ static void etm_set_event_sel(ETM_interface *etm, int sel_num, int rs_num, int p
 }
 
 
-void etm_set_event_trc(ETM_interface *etm, int mask, int atb)
+void etm_set_event_trc(volatile ETM_interface *etm, int mask, int atb)
 {
     etm->event_ctrl_1 |= mask;
     if (atb)
@@ -366,13 +366,13 @@ void etm_set_event_trc(ETM_interface *etm, int mask, int atb)
 }
 
 
-void etm_always_fire_event_pos(ETM_interface *etm, int pos)
+void etm_always_fire_event_pos(volatile ETM_interface *etm, int pos)
 {
     etm_set_event_sel(etm, pos, 1, 0);
     etm_set_event_trc(etm, 0x1 << pos, 0);
 }
 
-void etm_register_pmu_event(ETM_interface *etm, int event_bus)
+void etm_register_pmu_event(volatile ETM_interface *etm, int event_bus)
 {
     int rs_num = _request_rs(etm);
     int ext_num = _request_ext_sel(etm);
@@ -387,7 +387,7 @@ void etm_register_pmu_event(ETM_interface *etm, int event_bus)
     etm_set_event_trc(etm, 0x1 << ext_num, 0);
 }
 
-uint8_t etm_prepare_external_input_resource(ETM_interface *etm, int event_bus)
+uint8_t etm_prepare_external_input_resource(volatile ETM_interface *etm, int event_bus)
 {
     int rs_num = _request_rs(etm);
     int ext_num = _request_ext_sel(etm);
@@ -396,7 +396,7 @@ uint8_t etm_prepare_external_input_resource(ETM_interface *etm, int event_bus)
     return rs_num;
 }
 
-uint8_t etm_prepare_short_counter(ETM_interface* etm, uint16_t counter_val, uint8_t rs_num)
+uint8_t etm_prepare_short_counter(volatile ETM_interface* etm, uint16_t counter_val, uint8_t rs_num)
 {
     uint8_t ct_num = _request_ct(etm);
     etm->counter_ctrl[ct_num] = rs_num;  // when rs_num fires, counter decrement
@@ -409,20 +409,20 @@ uint8_t etm_prepare_short_counter(ETM_interface* etm, uint16_t counter_val, uint
     return ct_num;
 }
 
-uint8_t etm_prepare_counter_fire_resource(ETM_interface* etm, uint8_t counter_num)
+uint8_t etm_prepare_counter_fire_resource(volatile ETM_interface* etm, uint8_t counter_num)
 {
     uint8_t rs_num = _request_rs(etm);
     etm_set_rs(etm, rs_num, Counter_Seq, counter_num, -1, 0, 0);
     return rs_num;
 }
 
-void etm_event_for_resource(ETM_interface* etm, uint8_t event_pos, uint8_t rs_num)
+void etm_event_for_resource(volatile ETM_interface* etm, uint8_t event_pos, uint8_t rs_num)
 {
     etm_set_event_sel(etm, event_pos, rs_num, 0);
     etm_set_event_trc(etm, 0x1 << event_pos, 0);
 }
 
-void etm_example_short_counter_fire_event(ETM_interface* etm, int event_bus, uint16_t counter_val, uint8_t event_position)
+void etm_example_short_counter_fire_event(volatile ETM_interface* etm, int event_bus, uint16_t counter_val, uint8_t event_position)
 {
     printf("Running example: Single counter counting Event Bus %d with reload %u and fire Event\n", event_bus, counter_val);
     printf("Event position: %d\n", event_position);
@@ -436,7 +436,7 @@ void etm_example_short_counter_fire_event(ETM_interface* etm, int event_bus, uin
 
 
 
-void etm_set_large_counter(ETM_interface* etm, int cnt_base_index, uint32_t val)
+void etm_set_large_counter(volatile ETM_interface* etm, int cnt_base_index, uint32_t val)
 {
     // when forming larger counter by using two counters, the cnt_base_index should be even. On Cortex-A53, only two cnts are available
     // thus the only valid value is 0
@@ -448,15 +448,15 @@ void etm_set_large_counter(ETM_interface* etm, int cnt_base_index, uint32_t val)
 
     etm->counter_ctrl[cnt_base_index] |= 0x1 << 16; // self-reload
     etm->counter_ctrl[cnt_base_index + 1] |= 0x1 << 16; // self-reload
-    etm->counter_ctrl[cnt_base_index + 1] |= 0x1 << 17; // forming a larger counter 
+    etm->counter_ctrl[cnt_base_index + 1] |= 0x1 << 17; // forming a larger counter
 }
 
-void etm_print_large_counter(ETM_interface* etm, int cnt_base_index)
+void etm_print_large_counter(volatile ETM_interface* etm, int cnt_base_index)
 {
     printf("%10d\n", etm->counter_val[cnt_base_index] | (etm->counter_val[cnt_base_index + 1] << 16));
 }
 
-void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t counter_val)
+void etm_example_large_counter(volatile ETM_interface* etm, int event_bus, uint32_t counter_val)
 {
     printf("Large counter counting Evnet Bus %d\n", event_bus);
     printf("Reload value: %d\n", counter_val);
@@ -477,7 +477,7 @@ void etm_example_large_counter(ETM_interface* etm, int event_bus, uint32_t count
     etm_set_large_counter(etm, 0, counter_val);
 }
 
-void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uint32_t counter_val)
+void etm_example_large_counter_fire_event(volatile ETM_interface* etm, int event_bus, uint32_t counter_val)
 {
     printf("Running example: Large counter counting Event Bus and fire Event\n");
     printf("IMPORTANT: read counter value when ETM is active might return unstable value!\n");
@@ -522,7 +522,7 @@ void etm_example_large_counter_fire_event(ETM_interface* etm, int event_bus, uin
 }
 
 
-void etm_example_large_counter_rapid_fire_pos(ETM_interface* etm, int pos, uint32_t counter_val)
+void etm_example_large_counter_rapid_fire_pos(volatile ETM_interface* etm, int pos, uint32_t counter_val)
 {
     int rs_pair = _request_rs_pair(etm);
 
@@ -537,7 +537,7 @@ void etm_example_large_counter_rapid_fire_pos(ETM_interface* etm, int pos, uint3
     etm_set_event_trc(etm, 0x1 << pos, 0);
 }
 
-void etm_register_single_addr_match_event(ETM_interface *etm, uint64_t addr) 
+void etm_register_single_addr_match_event(volatile ETM_interface *etm, uint64_t addr)
 {
     int addr_cmp_num = _request_addr_cmp(etm);
     int rs_num = _request_rs(etm);
@@ -549,14 +549,3 @@ void etm_register_single_addr_match_event(ETM_interface *etm, uint64_t addr)
     etm_set_event_trc(etm, 0x1 << ext_num, 0);
 
 }
-
-
-
-
-
-
-
-
-
-
-

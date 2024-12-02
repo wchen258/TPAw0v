@@ -34,8 +34,8 @@ void spawn_child(void (*func)())
     Then it polls TMC1 (aka ETF1) to read trace data.
     When ETM is disabled again, poller prints the trace data.
 */
-extern ETM_interface *etms[4];
-extern TMC_interface *tmc1;
+volatile extern ETM_interface *etms[4];
+volatile extern TMC_interface *tmc1;
 void poller()
 {
     pin_to_core(1);
@@ -52,7 +52,7 @@ void poller()
         if (tmp == 0xffffffff)
         {
             // If there is no new data to read, trigger a flush to force output buffered data. But it will trash the bus with formatter padding (i.e. bunch of zeros)
-            // tmc1->formatter_flush_ctrl = 0x43; 
+            // tmc1->formatter_flush_ctrl = 0x43;
             flush_ct++;
             if (flush_ct % 10 == 0)
             {
@@ -210,7 +210,7 @@ void linux_disable_cpuidle(void)
 }
 
 /*  Write the binary file [bin_name] to the target address.
-    Return the first uint32_t in the binary file (the first milestone in graph) 
+    Return the first uint32_t in the binary file (the first milestone in graph)
     --------------------
     Return:
         The first uint32_t in the binary file.
@@ -307,7 +307,7 @@ static uint32_t *get_buf_ptr(uint64_t buf_addr, uint32_t buf_size)
 }
 
 /*
-    When formatter is enabled. 0xffffffff is not possible. 
+    When formatter is enabled. 0xffffffff is not possible.
     Thus it can be used as a valid trace ending marker
 */
 void clear_buffer(uint64_t buf_addr, uint32_t buf_size)

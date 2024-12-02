@@ -1,5 +1,5 @@
 /*
-    Brief: adapted from start_etr.c, this demo also illustrates 
+    Brief: adapted from start_etr.c, this demo also illustrates
         how to emit Event Packet in trace stream when a user-chosen PMU event happens for a user-defined number of times.
 
     This demo should run on ZCU102/Kria board as long as the APU has linux running.
@@ -12,7 +12,7 @@
     Some observations:
         The address range can toggle the trace-on and trace-off.
         However, the emit of Event Packet is independent of the trace-on/trace-off state.
-        When the event occurs, the ETM will send synchronization plus event packet. 
+        When the event occurs, the ETM will send synchronization plus event packet.
 
         This demo the poller does NOT attempt to flush the TMC at all.
         It's unclear whether the real-time property is preserved.
@@ -28,20 +28,20 @@
 #include "cs_config.h"
 #include "cs_soc.h"
 
-extern ETM_interface *etms[4];
-extern TMC_interface *tmc3;
+extern volatile ETM_interface *etms[4];
+extern volatile TMC_interface *tmc3;
 
 int main(int argc, char *argv[])
 {
     printf("Vanilla ZCU102 self-host trace demo.\n");
     printf("Build: on %s at %s\n\n", __DATE__, __TIME__);
 
-    pid_t target_pid; 
+    pid_t target_pid;
 
     // Disabling all cpuidle. Access the ETM of an idled core will cause a hang.
     linux_disable_cpuidle();
-    
-    // Pin to the 4-th core, because we will use 1st core to run the target application.  
+
+    // Pin to the 4-th core, because we will use 1st core to run the target application.
     pin_to_core(3);
 
     uint64_t buf_addr = 0x00FFFC0000;  //OCM
@@ -58,7 +58,7 @@ int main(int argc, char *argv[])
     // initialize ETM
     config_etm_n(etms[0], 0, 1);
 
-    // fork a child to execute the target application. 
+    // fork a child to execute the target application.
     for (int i = 0; i < 1; i++)
     {
         target_pid = fork();
@@ -69,14 +69,14 @@ int main(int argc, char *argv[])
 
             // further configure ETM. So that it will only trace the process with pid == child_pid/target_pid
             etm_set_contextid_cmp(etms[0], child_pid);
-            etm_register_range(etms[0], 0x400000, 0x500000, 1); // only trace the control flow in this range 
+            etm_register_range(etms[0], 0x400000, 0x500000, 1); // only trace the control flow in this range
 
             // choose one example to run
             //      example 1: use one counter (16-bit)
             // etm_example_single_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 65535); // 65535 is the max value for a 16-bit counter
 
             //      example 2: use two counters to form a 32 bit counter
-            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 100); 
+            etm_example_large_counter_fire_event(etms[0], L2D_CACHE_REFILL_T, 100);
 
             //     example 3: test, use a large counter to see how fast it can emit event packet
             // etm_example_large_counter_rapid_fire_pos(etms[0], 0, 50000);
@@ -100,7 +100,7 @@ int main(int argc, char *argv[])
     int status;
     waitpid(target_pid, &status, 0);
 
-    // Disable ETM, our trace session is done. 
+    // Disable ETM, our trace session is done.
     etm_disable(etms[0]);
 
     // drain the TMC3 (ETR) and write the trace data to files
@@ -109,4 +109,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-

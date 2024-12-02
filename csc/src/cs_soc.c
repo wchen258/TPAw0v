@@ -4,7 +4,7 @@
 #include <stdint.h>
 #define ADDR(b, r) ((char *) (&b->r) - (char *) b)
 
-void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time)
+void funnel_config_port(volatile Funnel_interface *funnel, uint8_t mask, int hold_time)
 {
     funnel->ctrl = 0;
     funnel->ctrl |= (mask & 0xff) ;
@@ -12,25 +12,25 @@ void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time)
         printf("WARNING: invalid hold time, choose from 0b0..0b1110. Auto set to 0b0");
     } else {
         funnel->ctrl |= hold_time << 8;
-    } 
+    }
 }
 
-void tmc_set_mode(TMC_interface* tmc, enum tmc_mode mode) {
+void tmc_set_mode(volatile TMC_interface* tmc, enum tmc_mode mode) {
     tmc->mode = mode;
 }
 
-void tmc_set_size(TMC_interface *tmc, uint32_t ram_size)
+void tmc_set_size(volatile TMC_interface *tmc, uint32_t ram_size)
 {
-    tmc->ram_size = ram_size/4 ; 
+    tmc->ram_size = ram_size/4 ;
 }
 
-void tmc_set_data_buf(TMC_interface *tmc, uint64_t addr)
+void tmc_set_data_buf(volatile TMC_interface *tmc, uint64_t addr)
 {
     tmc->data_buf_addr_low = (uint32_t) addr ;
     tmc->data_buf_addr_high = (uint32_t) (addr >> 32);
 }
 
-void tmc_set_axi(TMC_interface *tmc, int burst_len)
+void tmc_set_axi(volatile TMC_interface *tmc, int burst_len)
 {
     // tmc->axi_ctrl = 0;
     // tmc->axi_ctrl |= burst_len & 0xf << 8 ;
@@ -40,30 +40,30 @@ void tmc_set_axi(TMC_interface *tmc, int burst_len)
     tmc->axi_ctrl = 0b111111;
 }
 
-void tmc_set_read_pt(TMC_interface *tmc, uint64_t addr)
+void tmc_set_read_pt(volatile TMC_interface *tmc, uint64_t addr)
 {
     tmc->ram_read_pt = (uint32_t) addr;
     tmc->ram_read_pt_high = (uint32_t) (addr >> 32);
 }
 
-void tmc_set_write_pt(TMC_interface *tmc, uint64_t addr)
+void tmc_set_write_pt(volatile TMC_interface *tmc, uint64_t addr)
 {
     tmc->ram_write_pt = (uint32_t) addr;
     tmc->ram_write_pt_high = (uint32_t) (addr >> 32);
 }
 
-void tmc_strong_disable(TMC_interface *tmc) {
+void tmc_strong_disable(volatile TMC_interface *tmc) {
     tmc->ctrl = 0x0;
     while(!tmc_ready(tmc));
-    
+
 }
 
-int tmc_ready(TMC_interface *tmc)
+int tmc_ready(volatile TMC_interface *tmc)
 {
     return CHECK(tmc->status, 2);
 }
 
-void tmc_drain_data(TMC_interface *tmc) 
+void tmc_drain_data(volatile TMC_interface *tmc)
 {
     tmc_strong_disable(tmc);
 
@@ -96,10 +96,10 @@ void tmc_drain_data(TMC_interface *tmc)
 
     fclose(fp2);
     fclose(fp3);
-    munmap(tmc, sizeof(TMC_interface));
+    munmap((void *)tmc, sizeof(TMC_interface));
 }
 
-void tmc_hardfifo_stop_sequence(TMC_interface *tmc) {
+void tmc_hardfifo_stop_sequence(volatile TMC_interface *tmc) {
     tmc->formatter_flush_ctrl |= 0x1 << 12; // formatter will stop upon a flush
     tmc->formatter_flush_ctrl |= 0x1 << 6; // reuqest a manual flush
     printf("wait for HARDFIFO to stop\n");
@@ -108,7 +108,7 @@ void tmc_hardfifo_stop_sequence(TMC_interface *tmc) {
     printf("HARDFIFO stopped and disabled\n");
 }
 
-void tmc_drain_data_canonical(TMC_interface *tmc) 
+void tmc_drain_data_canonical(volatile TMC_interface *tmc)
 {
     tmc->formatter_flush_ctrl |= 0x1 << 12; // formatter will stop upon a flush
     tmc->formatter_flush_ctrl |= 0x1 << 6; // reuqest a manual flush
@@ -146,11 +146,11 @@ void tmc_drain_data_canonical(TMC_interface *tmc)
 
     fclose(fp2);
     fclose(fp3);
-    munmap(tmc, sizeof(TMC_interface));
+    munmap((void *)tmc, sizeof(TMC_interface));
 }
 
 
-void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
+void cti_config(volatile CTI_interface *tar_cti, uint32_t gate_mask) {
     cti_unlock(tar_cti);  // unlock CTI to enable write
     tar_cti->ctrl = 0x0u;
     while(tar_cti->ctrl != 0x0u) {;};
@@ -164,7 +164,7 @@ void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
     tar_cti->trig_to_channel_en[5] = 0x0u;
     tar_cti->trig_to_channel_en[6] = 0x0u;
     tar_cti->trig_to_channel_en[7] = 0x0u;
- 
+
     // clear out all the channel to trigout
     tar_cti->channel_to_trig_en[0] = 0x0u;
     tar_cti->channel_to_trig_en[1] = 0x0u;
@@ -192,7 +192,7 @@ void cti_config(CTI_interface *tar_cti, uint32_t gate_mask) {
 
 
 
-void cti_report(CTI_interface *cti) {
+void cti_report(volatile CTI_interface *cti) {
     printf("CTI report Start\n");
     printf("ctrl               %x\n", cti->ctrl);
     printf("Trigger In Status  %x\n", cti->trig_in_status);
@@ -202,7 +202,7 @@ void cti_report(CTI_interface *cti) {
 }
 
 
-void replicator_report(Replicator_interface* repl) {
+void replicator_report(volatile Replicator_interface* repl) {
     printf("Replicator report Start\n");
     printf("id_filter_atb_master_p_0 %x\n", repl->id_filter_atb_master_p_0);
     printf("id_filter_atb_master_p_1 %x\n", repl->id_filter_atb_master_p_1);
@@ -233,7 +233,7 @@ void explain_tmc_STS(uint32_t sts_reg) {
     printf("Full %d\n", (sts_reg & 0x1));
     printf("Triggered %d\n", (sts_reg & 0x2) >> 1);
     printf("TMCReady %d\n", (sts_reg & 0x4) >> 2);
-    printf("FtEmpty %d\n", (sts_reg & 0x8) >> 3);  
+    printf("FtEmpty %d\n", (sts_reg & 0x8) >> 3);
     printf("Empty %d\n", (sts_reg & 0x10) >> 4);
     printf("MemErr %d\n", (sts_reg & 0x20) >> 5);
     printf("==== END ====\n");
@@ -247,7 +247,7 @@ void explain_tmc_FFSR(uint32_t ffsr_reg) {
     printf("==== END ====\n");
 }
 
-void tmc_report(TMC_interface* tmc, int tmc_index) {
+void tmc_report(volatile TMC_interface* tmc, int tmc_index) {
     printf("**** TMC %d report Start ****\n", tmc_index);
     printf("ram_size %x\n", tmc->ram_size);
     // printf("status %x\n", tmc->status);
@@ -274,7 +274,7 @@ void tmc_report(TMC_interface* tmc, int tmc_index) {
 }
 
 
-void tpiu_report(TPIU_interface* tpiu) {
+void tpiu_report(volatile TPIU_interface* tpiu) {
     printf("TPIU report Start\n");
     printf("support_port_size %x\n", tpiu->support_port_size);
 

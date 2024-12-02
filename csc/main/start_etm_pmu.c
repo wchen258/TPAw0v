@@ -15,19 +15,19 @@
 #include "cs_etm.h"
 #include "cs_config.h"
 
-extern ETM_interface *etms[4];
+extern volatile ETM_interface *etms[4];
 
 int main(int argc, char *argv[])
 {
     printf("Vanilla ZCU102 self-host trace demo.\n");
     printf("Build: on %s at %s\n\n", __DATE__, __TIME__);
 
-    pid_t target_pid; 
+    pid_t target_pid;
 
     // Disabling all cpuidle. Access the ETM of an idled core will cause a hang.
     linux_disable_cpuidle();
-    
-    // Pin to the 4-th core, because we will use 1st core to run the target application.  
+
+    // Pin to the 4-th core, because we will use 1st core to run the target application.
     pin_to_core(3);
 
     // configure TMC1 to be in Software FIFO mode
@@ -83,4 +83,3 @@ int main(int argc, char *argv[])
 
     return 0;
 }
-

@@ -185,7 +185,7 @@ typedef struct __attribute__((__packed__)) tpiu_interface {
     uint32_t formatter_sync_counter;
     PAD(0x30c, 0x400);
     uint32_t tpiu_exctl_in_port ;
-    uint32_t tpiu_exctl_out_port ;  
+    uint32_t tpiu_exctl_out_port ;
     PAD(0x408, 0xee4);
     uint32_t integration_test_trig_in_flush_in_ack ;
     uint32_t integration_test_trig_in_flush_in ;
@@ -276,7 +276,7 @@ typedef struct __attribute__((__packed__)) tmc_interface {
     uint32_t status ;
     uint32_t ram_read_data ;
     uint32_t ram_read_pt ;
-    uint32_t ram_write_pt ; 
+    uint32_t ram_write_pt ;
     uint32_t trig_counter ;
     uint32_t ctrl ;
     uint32_t ram_write_data;
@@ -334,52 +334,52 @@ typedef struct __attribute__((__packed__)) tmc_interface {
 } TMC_interface ;
 
 /* return 1 when TMCReady pin is asserted */
-int tmc_ready(TMC_interface *tmc);
+int tmc_ready(volatile TMC_interface *tmc);
 
-static inline void funnel_unlock(Funnel_interface *funnel)
+static inline void funnel_unlock(volatile Funnel_interface *funnel)
 {
     funnel->lock_access = 0xc5acce55;
 }
 
-static inline void replicator_unlock(Replicator_interface *replicator)
+static inline void replicator_unlock(volatile Replicator_interface *replicator)
 {
     replicator->lock_access = 0xc5acce55;
 }
 
-static inline void tmc_unlock(TMC_interface *tmc)
+static inline void tmc_unlock(volatile TMC_interface *tmc)
 {
     tmc->lock_access = 0xc5acce55;
 }
 
-static inline void tpiu_unlock(TPIU_interface *tpiu)
+static inline void tpiu_unlock(volatile TPIU_interface *tpiu)
 {
     tpiu->lock_access = 0xc5acce55;
 }
 
-static inline void tmc_enable(TMC_interface *tmc)
+static inline void tmc_enable(volatile TMC_interface *tmc)
 {
     tmc->ctrl = 0x1;
 }
 
 
 
-static inline void tmc_disable(TMC_interface *tmc)
+static inline void tmc_disable(volatile TMC_interface *tmc)
 {
     tmc->ctrl = 0x0;
     while(tmc_ready(tmc) == 0);
 }
 
-static inline void tmc_man_flush(TMC_interface *tmc)
+static inline void tmc_man_flush(volatile TMC_interface *tmc)
 {
     tmc->formatter_flush_ctrl |= 0x1 << 6;
 }
 
-static inline void cti_unlock(CTI_interface *cti)
+static inline void cti_unlock(volatile CTI_interface *cti)
 {
     cti->lock_access = 0xc5acce55;
 }
 
-static inline void debug_unlock(Debug_interface *debug)
+static inline void debug_unlock(volatile Debug_interface *debug)
 {
     debug->ext_dbg_lock_access = 0xc5acce55;
     __asm__ volatile("dsb SY" : : : "memory");
@@ -388,62 +388,62 @@ static inline void debug_unlock(Debug_interface *debug)
     while(!(debug->ext_dbg_lock_status == 0x1 || debug->ext_dbg_lock_status == 0x0)) {;};
 }
 
-static inline void debug_os_unlock(Debug_interface *debug)
+static inline void debug_os_unlock(volatile Debug_interface *debug)
 {
     debug->os_lock_access_reg = 0b0;
     __asm__ volatile("dsb SY" : : : "memory");
 }
 
 
-void tmc_set_mode(TMC_interface *, enum tmc_mode);
-void tmc_set_size(TMC_interface *, uint32_t);
-void tmc_set_data_buf(TMC_interface *, uint64_t);
-void tmc_set_axi(TMC_interface *, int);
-void tmc_set_read_pt(TMC_interface *, uint64_t);
-void tmc_set_write_pt(TMC_interface *, uint64_t);
+void tmc_set_mode(volatile TMC_interface *, enum tmc_mode);
+void tmc_set_size(volatile TMC_interface *, uint32_t);
+void tmc_set_data_buf(volatile TMC_interface *, uint64_t);
+void tmc_set_axi(volatile TMC_interface *, int);
+void tmc_set_read_pt(volatile TMC_interface *, uint64_t);
+void tmc_set_write_pt(volatile TMC_interface *, uint64_t);
 
 
 
-/*  Use tmc_drain_data when the trace session is done 
+/*  Use tmc_drain_data when the trace session is done
     In the context of this project, the trace session is done when ETM is disabled
 */
-void tmc_drain_data(TMC_interface *tmc);
+void tmc_drain_data(volatile TMC_interface *tmc);
 
-/*  The "correct" way to drain data. However, on some boards, the flush logic does not execute properly. 
-    Suspect some silicon bug. 
-    
-    The function instructs the TMC to Stop upon completing a flush reqest. Then send a manual flush. 
+/*  The "correct" way to drain data. However, on some boards, the flush logic does not execute properly.
+    Suspect some silicon bug.
+
+    The function instructs the TMC to Stop upon completing a flush reqest. Then send a manual flush.
     When the TMC's formatter is stopped and TMCReady is asserted. It reads RAM Read Data register to drain the data.
-    When all drained, it disables the TMC.    
+    When all drained, it disables the TMC.
 */
-void tmc_drain_data_canonical(TMC_interface *tmc);
+void tmc_drain_data_canonical(volatile TMC_interface *tmc);
 
 /* disable and wait until the TMC is ready */
-void tmc_strong_disable(TMC_interface *tmc);
+void tmc_strong_disable(volatile TMC_interface *tmc);
 
-void tmc_hardfifo_stop_sequence(TMC_interface *tmc);
+void tmc_hardfifo_stop_sequence(volatile TMC_interface *tmc);
 
-void funnel_config_port(Funnel_interface *funnel, uint8_t mask, int hold_time);
+void funnel_config_port(volatile Funnel_interface *funnel, uint8_t mask, int hold_time);
 
-void cti_config(CTI_interface * cti, uint32_t gate_mask);
+void cti_config(volatile CTI_interface * cti, uint32_t gate_mask);
 
 
 
 // Below are functions for debug purpose
 
-void cti_report(CTI_interface * cti);
-void replicator_report(Replicator_interface * repl);
-void tmc_report(TMC_interface* tmc, int tmc_index);
+void cti_report(volatile CTI_interface * cti);
+void replicator_report(volatile Replicator_interface * repl);
+void tmc_report(volatile TMC_interface* tmc, int tmc_index);
 
 /*
     On some boards, calling this function in full will cause the execution to hange.
     The board is not killed though.
-    It's very likely the TPIU is not powered. 
-    According to manul, we need to PHYSICALLY connect two jumps on board. 
+    It's very likely the TPIU is not powered.
+    According to manul, we need to PHYSICALLY connect two jumps on board.
 
     If this is true, then TPIU is sliently exerting a upstream pressure to TMC2
     that explains why TMC2 is stunned.
 */
-void tpiu_report(TPIU_interface* tpiu);
+void tpiu_report(volatile TPIU_interface* tpiu);
 
 #endif
